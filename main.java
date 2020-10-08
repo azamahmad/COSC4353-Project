@@ -5,11 +5,11 @@ public class main {
     public static void main(String arg[]){
         Scanner input = new Scanner(System.in);
         ArrayList<member> members = new ArrayList<member>();
-        //ArrayList<team> teams = new ArrayList<team>();
+        ArrayList<team> teams = new ArrayList<team>();
         //ArrayList<task> tasks = new ArrayList<task>();
-        //ArrayList<category> catagories = new ArrayList<category>();
+        //ArrayList<category> categories = new ArrayList<category>();
 
-        int x = 2;
+        int x;
         System.out.print("1:members, 2:teams, 3:tasks, 4:categories: ");
         x = Integer.parseInt(input.nextLine());
         switch(x) {
@@ -17,28 +17,38 @@ public class main {
             members.add(new member());
             break;
             case 2:
-            teams.addElement(new team());
+            teams.add(new team());
             break;
             case 3:
-            //tasks.addElement(new task());
+            //tasks.add(new task());
             break;
             case 4:
-                //categories.addElement(new category());
+                //categories.add(new category());
                 break;
-    }
-        for(int i = 0; i < members.size(); ++i){
-            members.get(i).print();
         }
-        /*
-        for(int i = 0; i < teams.size(); ++i){
-            members.get(i).print();
+        System.out.println("List of members: ");
+        for (member member : members) {
+            member.print();
+            System.out.println();
         }
-        for(int i = 0; i < tasks.size(); ++i){
-            members.get(i).print();
-        }
-        for(int i = 0; i < categories.size(); ++i){
-            members.get(i).print();
-        }
-        */
+
+//        System.out.println("List of teams");
+//        for (team team : teams) {
+//            team.print();
+//            System.out.println();
+//        }
+
+//        System.out.println("List of tasks");
+//        for(task task : tasks){
+//            task.print();
+//            System.out.println();
+//        }
+
+//        System.out.println("List of categories");
+//        for(category category : categories){
+//            category.print();
+//            System.out.println();
+//        }
+
 }
 }
