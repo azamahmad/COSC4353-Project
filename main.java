@@ -7,7 +7,7 @@ public class main {
         ArrayList<member> members = new ArrayList<member>();
         ArrayList<team> teams = new ArrayList<team>();
         ArrayList<task> tasks = new ArrayList<task>();
-        //ArrayList<category> categories = new ArrayList<category>();
+        ArrayList<category> categories = new ArrayList<category>();
 
         int x;
         System.out.print("1:members, 2:teams, 3:tasks, 4:categories: ");
@@ -23,7 +23,7 @@ public class main {
                 tasks.add(new task());
                 break;
             case 4:
-                //categories.add(new category());
+                categories.add(new category());
                 break;
         }
         System.out.println("List of members: ");
@@ -47,12 +47,12 @@ public class main {
         }
         System.out.println();
 
-//        System.out.println("List of categories:");
-//        for(category category : categories){
-//            category.print();
-//            System.out.println();
-//        }
-//        System.out.println();
+        System.out.println("List of categories:");
+        for(category category : categories){
+            category.print();
+            System.out.println();
+        }
+        System.out.println();
 
 }
 }
