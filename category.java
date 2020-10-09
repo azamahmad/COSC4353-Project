@@ -26,7 +26,7 @@ public class category {
 
                 System.out.println("Enter color for new category: ");
                 color = sc.next();
-                System.out.println("category color: " + color); //Not done --have to call the color function
+                System.out.println("category color: " + color); 
 
                 System.out.println("Enter description for category: ");
                 description = sc.next();
@@ -39,7 +39,7 @@ public class category {
                     if (!categories.get(i).equals(editCategory)) {
                         System.out.println("Invalid category name...Please try again");
                     } else {
-                        System.out.println("what would you like to change? "); //Not done
+                        System.out.println("what would you like to change? ");
                     }
                 }
                 break;
