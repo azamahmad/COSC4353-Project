@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-  //ArrayList<category> catagories = new ArrayList<category>();  --From Main.java
+  //ArrayList<category> categories = new ArrayList<category>();  --From Main.java
 
 public class category {
     String categoryName, color, description;
@@ -21,7 +21,7 @@ public class category {
             case 1:
                 System.out.println("Enter new category name: ");
                 categoryName = sc.next();
-                categories.add(categoryName);
+                //categories.add(categoryName);
                 System.out.println(categoryName + " category created");
 
                 System.out.println("Enter color for new category: ");
@@ -35,29 +35,34 @@ public class category {
             case 2:
                 System.out.println("Enter name of category to be edited: ");
                 editCategory = sc.next();
-                for (int i = 0; i < categories.size(); i++) {
+                /*for (int i = 0; i < categories.size(); i++) {
                     if (!categories.get(i).equals(editCategory)) {
                         System.out.println("Invalid category name...Please try again");
                     } else {
                         System.out.println("what would you like to change? ");
                     }
-                }
+                }*/
                 break;
             case 3:
                 System.out.println("Enter name of category to delete: ");
                 deleteCategory = sc.next();
-                categories.remove(deleteCategory);
+                //categories.remove(deleteCategory);
                 break;
             case 4:
                 System.out.println("Existing categories:\n");
-                Iterator it = categories.iterator();
+                /*Iterator it = categories.iterator();
                 while (it.hasNext()) {
                     System.out.println(it.next());
-                }
+                }*/
                 break;
             case 5:
                 System.out.println("Returning to main...");
                 break;
         }
+    }
+    void print(){
+        System.out.println("Category name is: " + categoryName);
+        System.out.println("Category color: " + color);
+        System.out.println("Description: " + description);
     }
 }
