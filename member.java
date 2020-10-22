@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class member {
     private String name;
     private int id;
-    private static int currentID = 0; // keeps id's unique
+    private static int currentID = 1; // keeps id's unique
     private String color;
     private byte[] passwordHash;
     private byte salt[];

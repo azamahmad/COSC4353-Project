@@ -12,9 +12,9 @@ public class main {
         ArrayList<category> categories = new ArrayList<>();
 
         // initialize some dummy members
-        members.add(new member("Test account", "password", "Red", false)); // user id 0
-        members.add(new member("John Doe", "1337pass", "Pink", false));    // user id 1
-        members.add(new member("Mary Sue", "letmein1", "Orange", false));  // user id 2
+        members.add(new member("Test account", "password", "Red", false)); // user id 1
+        members.add(new member("John Doe", "1337pass", "Pink", false));    // user id 2
+        members.add(new member("Mary Sue", "letmein1", "Orange", false));  // user id 3
         member currentUser;
 
         try {

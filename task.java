@@ -3,8 +3,8 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class task {
-    //    private int ID;
-//    private static int nextID;
+    private int ID;
+    private static int currentID = 1;
     private String name;
     private String description;
     private String subtasks;
@@ -70,7 +70,7 @@ public class task {
                 String createdBy,
                 String status,
                 String color) {
-//        this.ID = nextID++;
+        this.ID = currentID++;
         this.name = name;
         this.description = description;
         this.subtasks = subtasks;

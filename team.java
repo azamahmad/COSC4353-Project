@@ -4,6 +4,7 @@ public class team {
     private boolean validated;
     private String teamName;
     private String color;
+    private static int currentID = 1;
     private int id;
 
     team(){
@@ -15,16 +16,7 @@ public class team {
         } while(teamName.length() == 0);
         System.out.println("Team name: " + teamName);
 
-        do {
-            System.out.println("Create a team ID:");
-            try {
-                id = Integer.parseInt(input.nextLine());
-                validated = true;
-            } catch (java.lang.NumberFormatException e) {
-                System.out.println("ID must be an integer");
-                validated = false;
-            }
-        } while (id == 0);
+        id = currentID++;
         System.out.println("ID is " + id);
 
         do{
