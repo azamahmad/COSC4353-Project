@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
 public class member {
-    String name;
-    int id;
-    String color;
+    private String name;
+    private int id;
+    private String color;
 
     member(){
         Scanner input = new Scanner(System.in);
@@ -16,11 +16,25 @@ public class member {
         System.out.println("Input member color:");
         color = input.nextLine();
         System.out.println("Color is " + color);
-    };
+    }
 
     void print(){
         System.out.println("Username is " + name);
         System.out.println("ID is " + id);
         System.out.println("Color is " + color);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+
 }

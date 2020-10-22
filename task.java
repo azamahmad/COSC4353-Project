@@ -1,6 +1,4 @@
-import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -95,5 +93,41 @@ public class task {
         System.out.format("Created by: %s\n", createdBy);
         System.out.format("Status: %s\n", status);
         System.out.format("Color: %s\n", color);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getSubtasks() {
+        return subtasks;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public String getAssignedTo() {
+        return assignedTo;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getColor() {
+        return color;
     }
 }

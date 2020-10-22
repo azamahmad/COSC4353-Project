@@ -8,9 +8,9 @@ import java.util.ArrayList;
   //ArrayList<category> categories = new ArrayList<category>();  --From Main.java
 
 public class category {
-    String categoryName, color, description;
-    String editCategory, deleteCategory;
-    int choice;
+    private String categoryName, color, description;
+    private String editCategory, deleteCategory;
+    private int choice;
 
     category() {
         Scanner sc = new Scanner(System.in);
@@ -64,5 +64,17 @@ public class category {
         System.out.println("Category name is: " + categoryName);
         System.out.println("Category color: " + color);
         System.out.println("Description: " + description);
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

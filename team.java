@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
 public class team {
-    String teamName;
-    String color;
-    int id;
+    private String teamName;
+    private String color;
+    private int id;
 
     team(){
         Scanner input = new Scanner(System.in);
@@ -23,4 +23,15 @@ public class team {
         System.out.println("Color is " + color);
     }
 
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
