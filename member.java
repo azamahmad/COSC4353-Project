@@ -12,11 +12,16 @@ public class member {
     private byte[] passwordHash;
     private byte salt[];
     private boolean admin;
+    private String additional;
+    private boolean validated;
 
     member(){
         Scanner input = new Scanner(System.in);
-        System.out.print("Input member name:");
-        name = input.nextLine();
+        do {
+            System.out.println("Input member name:");
+            name = input.nextLine();
+        } while(name.length() == 0);
+
         System.out.println("Username is " + name);
         id = currentID++;
         System.out.println("ID is " + id);
@@ -24,9 +29,13 @@ public class member {
         String password = input.next();
         setPassword(password);
         admin = false; // figure out how setting admin works
-        System.out.println("Input member color:");
-        color = input.nextLine();
+        do {
+            System.out.println("Input member color:");
+            color = input.nextLine();
+        } while (color.length() == 0);
         System.out.println("Color is " + color);
+        System.out.println("Additional member information (can leave empty):");
+        additional = input.nextLine();
     }
 
     public member(String name, String password, String color, boolean admin) {
@@ -41,6 +50,7 @@ public class member {
         System.out.println("Username is " + name);
         System.out.println("ID is " + id);
         System.out.println("Color is " + color);
+        System.out.println("Additional member information: " + additional);
     }
 
     public boolean authenticate(String password) {
