@@ -18,6 +18,7 @@ public class main {
 
         member currentUser;
 
+
         try {
             System.out.println("[!] Demo userID: 1\n[!] Demo password: password");
             currentUser = MenuLogin(members);
@@ -49,8 +50,8 @@ public class main {
                     MenuMember(members, currentUser);
                     break;
                 case 2:
-                    System.out.println("Not updated yet");
-                    teams.add(new team());
+                    //System.out.println("Not updated yet");
+                    MenuTeam(teams, currentUser);
                     break;
                 case 3:
                     System.out.println("Not updated yet");
@@ -120,6 +121,9 @@ public class main {
         members.add(new member("Freeza", "letmein", "Purple", false));  // user id 9
         members.add(new member("Chucky Cheese", "letmein", "Grey", false));  // user id 10
         members.add(new member("Hyper Baby", "letmein", "Brown", false));  // user id 11
+
+        teams.add(new team("Big Brains Team", "password", "Pink", true)); // user id 1
+
 
     }
 
@@ -314,10 +318,140 @@ public class main {
     }
 
     private static void MenuTeam(ArrayList<team> teams, member currentUser) {
+        Scanner input = new Scanner(System.in);
+        int choice;
+        team target;
+        boolean terminate = false;
+        int page = 1;
+
+        do {
+            target = null;
+            System.out.print("[ Teams ]\n");
+            // display the list
+            ShowTeamsTable(teams, page);
+            boolean hasLastPage = teams.size() > 0 && page > 1;
+            boolean hasNextPage = teams.size() > PAGELENGTH && (page == 1 || teams.size() > page*PAGELENGTH);
+
+            if (currentUser.isAdmin()) // only admins can do the following:
+                System.out.print(" 1: Create\n" +
+                        " 2: Modify\n" +
+                        " 3: Delete\n" +
+                        " 4: Back\n");
+            else {
+                System.out.println("Only admins can modify teams");
+                System.out.print(" 1: Back\n");
+            }
+
+            System.out.print("Choice: ");
+            if (!input.hasNextInt()) {
+                System.out.println("[!] Please enter a valid option.\n");
+                input.nextLine();
+                continue;
+            }
+            choice = Integer.parseInt(input.nextLine());
+            if (currentUser.isAdmin()) {
+                if (choice == 2 || choice == 3) {
+                    while (target == null) {
+                        System.out.print("Target userID: ");
+                        while (!input.hasNextInt()) {
+                            System.out.println("[!] Invalid ID\nTarget userID: ");
+                            input.nextLine();
+                        }
+                        target = findTeam(teams, Integer.parseInt(input.next())); // we have an integer, find the them in the table
+
+                        if (target == null)
+                            System.out.println("[!] Invalid ID\n");
+                    }
+                }
+                switch (choice) {
+                    case 1: // create
+                        teams.add(new team());
+                        break;
+                    case 2: // modify
+                        target.modify(); //each class should have a modify function, similar to how the constructor works
+                        break;
+                    case 3: // delete
+                            System.out.printf("Do you really want to delete team \"%s\" id \"%s\"? (Y/N) ",
+                                    target.getTeamName(),
+                                    target.getId());
+                            String str = input.nextLine();
+                            while (str.length() == 0) {
+                                str = input.nextLine();
+                            }
+                            char c = str.charAt(0);
+                            if (c == 'y' || c == 'Y') {
+                                teams.remove(target);
+                                System.out.println("Confirmed. Team was deleted.");
+                            } else {
+                                System.out.println("Aborted. Team was not deleted.");
+                            }
+
+                        break;
+                    case 4: // logout
+                        terminate = true;
+                        break;
+                    case 5: // page backward (only works if there is a previous page)
+                        if (hasLastPage) {
+                            page -= 1;
+                            break;
+                        }
+                    case 6: //page forward (only works if there is a next page)
+                        if (hasNextPage) {
+                            page += 1;
+                            break;
+                        }
+                    default:
+                        System.out.println("[!] Please enter a valid option");
+                        break;
+                }
+            } else { //regular user
+                switch (choice) {
+                    case 1: // back
+                        terminate = true;
+                        break;
+//                    case 2: //should allow self modification of their OWN, non-admin, account
+//                        break
+                    case 5: // page backward (only works if there is a previous page)
+                        if (hasLastPage) {
+                            page -= 1;
+                            break;
+                        }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
+                    case 6: //page forward (only works if there is a next page)
+                        if (hasNextPage) {
+                            page += 1;
+                            break;
+                        }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
+                    default:
+                        System.out.println("[!] Please enter a valid option");
+                        break;
+                }
+            }
+        } while (!terminate);
 
     }
 
-    private static void ShowTeamsTable(ArrayList<member> members, int page) {
+    private static void ShowTeamsTable(ArrayList<team> teams, int page) {
+        System.out.println("|  id |  color  |      Team Name       | Admin | Additional information ");
+        int i=0;
+        for (team o : teams) { // prints only the members on the current "page"
+            if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH)
+                System.out.println(o.toColumns());
+            i++;
+        }
+        boolean hasLastPage = teams.size() > 0 && page > 1;
+        boolean hasNextPage = teams.size() > PAGELENGTH && (page == 1 || teams.size() > page*PAGELENGTH);
+        if (teams.size() > PAGELENGTH) { // shows previous and next page hints
+            System.out.print("| ");
+            if (hasLastPage)
+                System.out.print("< 5: Last Page ");
+            else if (hasNextPage)
+                System.out.print("6: Next Page >");
+            System.out.println();
+        }
     }
 
     private static void MenuTask(ArrayList<task> tasks, member currentUser) {
