@@ -38,12 +38,34 @@ public class member {
         additional = input.nextLine();
     }
 
+    public void modify() {
+        System.out.println("Enter a blank line to keep current value.");
+        Scanner input = new Scanner(System.in);
+        String str;
+        System.out.printf("Member name(%s): ", name);
+        str = input.nextLine();
+        if (name.length() > 0)
+            name = str;
+        System.out.println("Username is " + name);
+//        System.out.println("Password: ");
+        System.out.printf("Color(%s): ", color);
+        str = input.nextLine();
+        if (str.length() > 0)
+            color = str;
+        System.out.println("Color is " + color);
+        System.out.printf("Additional information( %s ): ", additional);
+        str = input.nextLine();
+        if (str.length() > 0)
+            additional = str;
+    }
+
     public member(String name, String password, String color, boolean admin) {
         this.name = name;
         this.id = currentID++;
         setPassword(password);
         this.color = color;
         this.admin = admin;
+        this.additional = "";
     }
 
     void print(){
@@ -51,6 +73,16 @@ public class member {
         System.out.println("ID is " + id);
         System.out.println("Color is " + color);
         System.out.println("Additional member information: " + additional);
+    }
+
+    public String toColumns() {
+        // format:           "|  id  |  color  |      Name      | Admin | Additional information "
+        return String.format("| % 3d | %7s | %14s |   %s   | %s",
+                id,
+                color,
+                name,
+                admin ? "*" : " ",
+                additional);
     }
 
     public boolean authenticate(String password) {
