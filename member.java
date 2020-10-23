@@ -44,7 +44,7 @@ public class member {
         String str;
         System.out.printf("Member name(%s): ", name);
         str = input.nextLine();
-        if (name.length() > 0)
+        if (name.length() > 0) // do this to keep the original value if no input was given
             name = str;
         System.out.println("Username is " + name);
 //        System.out.println("Password: ");

@@ -46,7 +46,7 @@ public class main {
             switch (choice) {
                 case 1:
 //                    members.add(new member());
-                    MenuMembers(members, currentUser);
+                    MenuMember(members, currentUser);
                     break;
                 case 2:
                     System.out.println("Not updated yet");
@@ -110,7 +110,7 @@ public class main {
                                         ArrayList<task> tasks,
                                         ArrayList<category> categories) {
         members.add(new member("Admin account", "password", "Red", true)); // user id 1
-        members.add(new member("Gunther", "weakpassword", "Pink", false));    // user id 2
+        members.add(new member("Crung McCrimb", "weakpassword", "Pink", false));    // user id 2
         members.add(new member("Mohammed Ali", "letmein", "Orange", false));  // user id 3
         members.add(new member("Elvis Presley", "letmein", "Blue", false));  // user id 4
         members.add(new member("Nina Carlson", "letmein", "Cyan", false));  // user id 5
@@ -125,6 +125,9 @@ public class main {
 
     // Menu screens
 
+    // This handles logging in. If the user sends an newline for the user ID, it throws CancellationException.
+    // See main for examples of how to use this.
+    // If you need the user to verify their password to do an action, see call the member.java authenticate function
     private static member MenuLogin(ArrayList<member> members)
             throws CancellationException {
         // MenuLogin throws an error if user cancels logging in. Use this to resume session as current user OR terminate
@@ -167,7 +170,11 @@ public class main {
         return currentUser;
     }
 
-    private static void MenuMembers(ArrayList<member> members, member currentUser) {
+    // MenuMember (and other menu____'s) display the options and handle directing you to modify specific objects data.
+    // ShowMemberTable (and other Show____table's) just handle displaying list of data one "page" at a time.
+    // We can remove it later, but it might be better than seeing all the data at once.
+
+    private static void MenuMember(ArrayList<member> members, member currentUser) {
         Scanner input = new Scanner(System.in);
         int choice;
         member target;
@@ -178,7 +185,7 @@ public class main {
             target = null;
             System.out.print("[ Members ]\n");
             // display the list
-            MembersTable(members, page);
+            ShowMemberTable(members, page);
             boolean hasLastPage = members.size() > 0 && page > 1;
             boolean hasNextPage = members.size() > PAGELENGTH && (page == 1 || members.size() > page*PAGELENGTH);
 
@@ -218,7 +225,7 @@ public class main {
                         members.add(new member());
                         break;
                     case 2: // modify
-                        target.modify();
+                        target.modify(); //each class should have a modify function, similar to how the constructor works
                         break;
                     case 3: // delete
                         if (target == currentUser) {
@@ -286,17 +293,17 @@ public class main {
         } while (!terminate);
     }
 
-    private static void MembersTable(ArrayList<member> members, int page) {
+    private static void ShowMemberTable(ArrayList<member> members, int page) {
         System.out.println("|  id |  color  |      Name      | Admin | Additional information ");
         int i=0;
-        for (member o : members) {
+        for (member o : members) { // prints only the members on the current "page"
             if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH)
                 System.out.println(o.toColumns());
             i++;
         }
         boolean hasLastPage = members.size() > 0 && page > 1;
         boolean hasNextPage = members.size() > PAGELENGTH && (page == 1 || members.size() > page*PAGELENGTH);
-        if (members.size() > PAGELENGTH) {
+        if (members.size() > PAGELENGTH) { // shows previous and next page hints
             System.out.print("| ");
             if (hasLastPage)
                 System.out.print("< 5: Last Page ");
@@ -310,15 +317,29 @@ public class main {
 
     }
 
+    private static void ShowTeamsTable(ArrayList<member> members, int page) {
+    }
+
     private static void MenuTask(ArrayList<task> tasks, member currentUser) {
 
     }
 
-    private static void MenuCategorie(ArrayList<category> categories, member currentUser) {
+    private static void ShowTasksTable(ArrayList<member> members, int page) {
+    }
+
+    private static void MenuCategory(ArrayList<category> categories, member currentUser) {
 
     }
 
+    private static void ShowCategoryTable(ArrayList<member> members, int page) {
+    }
+
     // functions to search for an object in the arrays
+    // If they don't find a match, they return null.
+    // After searching, ALWAYS do something like this:
+    // member = findMember(members, 1)
+    // if (member == null)
+    //    //exception code
 
     private static member findMember(ArrayList<member> members, int memberID) {
         for (member obj : members) {
