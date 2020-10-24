@@ -54,8 +54,8 @@ public class main {
                     MenuTeam(teams, currentUser);
                     break;
                 case 3:
-                    System.out.println("Not updated yet");
-                    tasks.add(new task());
+                    //System.out.println("Not updated yet");
+                    MenuTask(tasks, currentUser);
                     break;
                 case 4:
                     System.out.println("Not updated yet");
@@ -456,10 +456,143 @@ public class main {
     }
 
     private static void MenuTask(ArrayList<task> tasks, member currentUser) {
+        Scanner input = new Scanner(System.in);
+        int choice;
+        task target;
+        boolean terminate = false;
+        int page = 1;
 
+        do {
+            target = null;
+            System.out.print("[ Tasks ]\n");
+            // display the list
+            ShowTasksTable(tasks, page);
+            boolean hasLastPage = tasks.size() > 0 && page > 1;
+            boolean hasNextPage = tasks.size() > PAGELENGTH && (page == 1 || tasks.size() > page*PAGELENGTH);
+
+            if (currentUser.isAdmin()) // only admins can do the following:
+                System.out.print(" 1: Create\n" +
+                        " 2: Modify\n" +
+                        " 3: Delete\n" +
+                        " 4: Back\n");
+            else {
+                System.out.println("Only admins can modify tasks");
+                System.out.print(" 1: Back\n");
+            }
+
+            System.out.print("Choice: ");
+            if (!input.hasNextInt()) {
+                System.out.println("[!] Please enter a valid option.\n");
+                input.nextLine();
+                continue;
+            }
+            choice = Integer.parseInt(input.nextLine());
+            if (currentUser.isAdmin()) {
+                if (choice == 2 || choice == 3) {
+                    while (target == null) {
+
+                        System.out.print("Target task name: ");
+                        //while (!input.hasNextInt()) {
+                        //    System.out.println("[!] Invalid name\nTarget task name: ");
+                        //    input.nextLine();
+                        //}
+                        target = findTask(tasks, input.next()); // we have an name, find the them in the table
+
+                        if (target == null)
+                            System.out.println("[!] Invalid name\n");
+                    }
+                }
+                switch (choice) {
+                    case 1: // create
+                        tasks.add(new task());
+                        break;
+                    case 2: // modify
+                        target.modify(); //each class should have a modify function, similar to how the constructor works
+                        break;
+                    case 3: // delete
+                        //if (target == currentUser) {
+                        //    System.out.println("[!] You cannot delete your own account");
+                        //} else {
+                        System.out.printf("Do you really want to delete task \"%s\" id \"%s\"? (Y/N) ",
+                                target.getName(),
+                                target.getID());
+                        String str = input.nextLine();
+                        while (str.length() == 0) {
+                            str = input.nextLine();
+                        }
+                        char c = str.charAt(0);
+                        if (c == 'y' || c == 'Y') {
+                            tasks.remove(target);
+                            System.out.println("Confirmed. task was deleted.");
+                        } else {
+                            System.out.println("Aborted. task was not deleted.");
+                        }
+                        //}
+                        break;
+                    case 4: // logout
+                        terminate = true;
+                        break;
+                    case 5: // page backward (only works if there is a previous page)
+                        if (hasLastPage) {
+                            page -= 1;
+                            break;
+                        }
+                    case 6: //page forward (only works if there is a next page)
+                        if (hasNextPage) {
+                            page += 1;
+                            break;
+                        }
+                    default:
+                        System.out.println("[!] Please enter a valid option");
+                        break;
+                }
+            } else { //regular user
+                switch (choice) {
+                    case 1: // back
+                        terminate = true;
+                        break;
+//                    case 2: //should allow self modification of their OWN, non-admin, account
+//                        break
+                    case 5: // page backward (only works if there is a previous page)
+                        if (hasLastPage) {
+                            page -= 1;
+                            break;
+                        }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
+                    case 6: //page forward (only works if there is a next page)
+                        if (hasNextPage) {
+                            page += 1;
+                            break;
+                        }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
+                    default:
+                        System.out.println("[!] Please enter a valid option");
+                        break;
+                }
+            }
+        } while (!terminate);
     }
 
-    private static void ShowTasksTable(ArrayList<member> members, int page) {
+    private static void ShowTasksTable(ArrayList<task> tasks, int page) {
+        System.out.println("|  id |  color  |      Name      | Assigned To |           Due Date           | Subtasks ");
+        int i=0;
+        for (task o : tasks) { // prints only the tasks on the current "page"
+            if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH)
+                System.out.println(o.toColumns());
+            i++;
+        }
+        boolean hasLastPage = tasks.size() > 0 && page > 1;
+        boolean hasNextPage = tasks.size() > PAGELENGTH && (page == 1 || tasks.size() > page*PAGELENGTH);
+        if (tasks.size() > PAGELENGTH) { // shows previous and next page hints
+            System.out.print("| ");
+            if (hasLastPage)
+                System.out.print("< 5: Last Page ");
+            else if (hasNextPage)
+                System.out.print("6: Next Page >");
+            System.out.println();
+        }
     }
 
     private static void MenuCategory(ArrayList<category> categories, member currentUser) {
@@ -492,7 +625,7 @@ public class main {
         return null;
     }
 
-    private static task findTeam(ArrayList<task> tasks, String taskName) {
+    private static task findTask(ArrayList<task> tasks, String taskName) {
         for (task obj : tasks) {
             if (obj.getName().equals(taskName))
                 return obj;
