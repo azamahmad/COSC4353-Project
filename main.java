@@ -365,7 +365,8 @@ public class main {
                 }
                 switch (choice) {
                     case 1: // create
-                        teams.add(new team());
+                        System.out.println("Feature unavailable.\n");
+                        //teams.add(new team());
                         break;
                     case 2: // modify
                         target.modify(); //each class should have a modify function, similar to how the constructor works
