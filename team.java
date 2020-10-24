@@ -34,6 +34,9 @@ public class team {
         }while(color.length() == 0);
 
         System.out.println("Color is " + color);
+
+        System.out.println("Additional team information (can leave empty):");
+        additional = input.nextLine();
     }
 
 
@@ -45,7 +48,7 @@ public class team {
         str = input.nextLine();
         if (teamName.length() > 0) // do this to keep the original value if no input was given
             teamName = str;
-        System.out.println("Username is " + teamName);
+        System.out.println("Team name is " + teamName);
 //        System.out.println("Password: ");
         System.out.printf("Color(%s): ", color);
         str = input.nextLine();
