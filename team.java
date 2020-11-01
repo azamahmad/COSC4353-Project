@@ -1,7 +1,3 @@
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class team {
@@ -10,9 +6,6 @@ public class team {
     private String color;
     private static int currentID = 1;
     private int id;
-    private byte[] passwordHash;
-    private byte salt[];
-    private boolean admin;
     private String additional;
 
     
@@ -49,7 +42,6 @@ public class team {
         if (teamName.length() > 0) // do this to keep the original value if no input was given
             teamName = str;
         System.out.println("Team name is " + teamName);
-//        System.out.println("Password: ");
         System.out.printf("Color(%s): ", color);
         str = input.nextLine();
         if (str.length() > 0)
@@ -61,12 +53,10 @@ public class team {
             additional = str;
     }
 
-    public team(String name, String password, String color, boolean admin) {
+    public team(String name, String color) {
         this.teamName = name;
         this.id = currentID++;
-        setPassword(password);
         this.color = color;
-        this.admin = admin;
         this.additional = "";
     }
 
@@ -78,55 +68,12 @@ public class team {
     }
 
     public String toColumns() {
-        // format:           "|  id  |  color  |      Name      | Admin | Additional information "
-        return String.format("| % 3d | %7s | %14s |   %s   | %s",
+        // format:           "|  id  |  color  |      Name      | Additional information "
+        return String.format("| % 3d | %7s | %14s | %s",
                 id,
                 color,
                 teamName,
-                admin ? "*" : " ",
                 additional);
-    }
-
-    public boolean authenticate(String password) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
-            digest.update(salt);
-            byte hash[] = digest.digest(password.getBytes());
-            return Arrays.equals(hash, passwordHash);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean changePassword(String oldPassword, String newPassword) {
-        if (authenticate(oldPassword)) {
-            setPassword(newPassword);
-        }
-        return false;
-    }
-
-    private void setPassword(String password) {
-        SecureRandom random = new SecureRandom();
-        this.salt = new byte[16];
-        random.nextBytes(this.salt);
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
-            digest.update(salt);
-            passwordHash = digest.digest(password.getBytes());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin, team other){ // Admins can set admin status of others, but not revoke themselves idk
-        if (other.isAdmin() && this != other) {
-            this.admin = admin;
-        }
     }
 
     public String getTeamName() {
