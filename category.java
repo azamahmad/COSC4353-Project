@@ -1,19 +1,18 @@
 
+import java.util.Date;
 import java.util.Scanner;
-import java.io.*;
-import java.util.*;
-import java.util.Iterator;
-import java.util.ArrayList;
 
   //ArrayList<category> categories = new ArrayList<category>();  --From Main.java
 
 public class category {
     private String categoryName, color, description;
-    private String editCategory, deleteCategory;
-    private int choice;
+    private member createdBy;
+    private Date createdOn;
 
-    category() {
+    category(member currentUser) {
         Scanner sc = new Scanner(System.in);
+        createdBy = currentUser;
+        createdOn = new Date();
         System.out.println("Enter new category name: ");
         categoryName = sc.nextLine();
         //categories.add(categoryName);
@@ -55,10 +54,13 @@ public class category {
     }
 
     public String toColumns() {
-        // format:           "|      Name      |  Color  | Description
-        return String.format("| %14s | %7s | %s",
+        // format:           "|      Name      |  Color  | Description"
+        // format:           "|      Name      |  Color  |   Created By   |          Created On          | Description"
+        return String.format("| %14s | %7s | %14s | %28s | %s",
                 categoryName,
                 color,
+                createdBy.getName(),
+                createdOn,
                 description);
     }
 
@@ -72,5 +74,13 @@ public class category {
 
     public String getDescription() {
         return description;
+    }
+
+    public member getCreatedBy() {
+        return createdBy;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
     }
 }

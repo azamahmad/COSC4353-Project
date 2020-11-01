@@ -77,7 +77,7 @@ public class member {
 
     public String toColumns() {
         // format:           "|  id  |  color  |      Name      | Admin | Additional information "
-        return String.format("| % 3d | %7s | %14s |   %s   | %s",
+        return String.format("| % 4d | %7s | %14s |   %s   | %s",
                 id,
                 color,
                 name,

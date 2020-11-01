@@ -5,13 +5,13 @@ import java.util.concurrent.CancellationException;
 
 public class main {
     private final static int PAGELENGTH = 5; // displays N items per page
+    static ArrayList<member> members = new ArrayList<>();
+    static ArrayList<team> teams = new ArrayList<>();
+    static ArrayList<task> tasks = new ArrayList<>();
+    static ArrayList<category> categories = new ArrayList<>();
 
     public static void main(String arg[]) {
         Scanner input = new Scanner(System.in);
-        ArrayList<member> members = new ArrayList<>();
-        ArrayList<team> teams = new ArrayList<>();
-        ArrayList<task> tasks = new ArrayList<>();
-        ArrayList<category> categories = new ArrayList<>();
 
         // initialize some dummy members
         initDefaultData(members, teams, tasks, categories);
@@ -110,18 +110,18 @@ public class main {
                                         ArrayList<task> tasks,
                                         ArrayList<category> categories) {
         members.add(new member("Admin account", "password", "Red", true)); // user id 1
-        members.add(new member("Crung McCrimb", "weakpassword", "Pink", false));    // user id 2
-        members.add(new member("Mohammed Ali", "letmein", "Orange", false));  // user id 3
-        members.add(new member("Elvis Presley", "letmein", "Blue", false));  // user id 4
-        members.add(new member("Nina Carlson", "letmein", "Cyan", false));  // user id 5
-        members.add(new member("Matthew Parker", "letmein", "Pink", false));  // user id 6
-        members.add(new member("Rocky Rhodes", "letmein", "Brown", false));  // user id 7
-        members.add(new member("Mike Wazowski", "letmein", "Green", false));  // user id 8
-        members.add(new member("Freeza", "letmein", "Purple", false));  // user id 9
-        members.add(new member("Chucky Cheese", "letmein", "Grey", false));  // user id 10
-        members.add(new member("Hyper Baby", "letmein", "Brown", false));  // user id 11
+        members.add(new member("Nina Carlson", "weakpassword", "Pink", false));    // user id 2
+        members.add(new member("Rocky Rhodes", "letmein", "Brown", false));  // user id 3
+        members.add(new member("Mike Wazowski", "letmein", "Green", false));  // user id 4
+        members.add(new member("Chucky Cheese", "letmein", "Grey", false));  // user id 5
+        members.add(new member("Hyper Baby", "letmein", "Brown", false));  // user id 6
 
-        teams.add(new team("Big Brains Team", "password", "Pink", true)); // user id 1
+        teams.add(new team("Big Brains Team","Pink")); // team id 1
+        teams.add(new team("Team Rocket","Red")); // team id 2
+        teams.add(new team("Justice League","Blue")); // team id 3
+        teams.add(new team("X-Men","Pink")); // team id 4
+
+//        tasks.add()
 
 
     }
@@ -157,7 +157,7 @@ public class main {
                     System.out.println("[!] User ID should be an integer.");
                     continue;
                 }
-                currentUser = findMember(members, memberID);
+                currentUser = findMember(memberID);
                 break; // we found a member (or a null)
             } while (true);
             System.out.print("Password: ");
@@ -208,7 +208,7 @@ public class main {
                 input.nextLine();
                 continue;
             }
-            choice = Integer.parseInt(input.nextLine());
+            choice = input.nextInt();
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
                     while (target == null) {
@@ -217,7 +217,7 @@ public class main {
                             System.out.println("[!] Invalid ID\nTarget userID: ");
                             input.nextLine();
                         }
-                        target = findMember(members, Integer.parseInt(input.next())); // we have an integer, find the them in the table
+                        target = findMember(Integer.parseInt(input.next())); // we have an integer, find the them in the table
 
                         if (target == null)
                             System.out.println("[!] Invalid ID\n");
@@ -356,7 +356,7 @@ public class main {
                             System.out.println("[!] Invalid ID\nTarget userID: ");
                             input.nextLine();
                         }
-                        target = findTeam(teams, Integer.parseInt(input.next())); // we have an integer, find the them in the table
+                        target = findTeam(Integer.parseInt(input.next())); // we have an integer, find the them in the table
 
                         if (target == null)
                             System.out.println("[!] Invalid ID\n");
@@ -435,7 +435,7 @@ public class main {
     }
 
     private static void ShowTeamsTable(ArrayList<team> teams, int page) {
-        System.out.println("|  id |  color  |      Team Name       | Admin | Additional information ");
+        System.out.println("|  id  |  color  |      Name      | Additional information ");
         int i=0;
         for (team o : teams) { // prints only the members on the current "page"
             if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH)
@@ -465,9 +465,13 @@ public class main {
             target = null;
             System.out.print("[ Tasks ]\n");
             // display the list
-            ShowTasksTable(tasks, page);
-            boolean hasLastPage = tasks.size() > 0 && page > 1;
-            boolean hasNextPage = tasks.size() > PAGELENGTH && (page == 1 || tasks.size() > page*PAGELENGTH);
+            ShowTasksTable(tasks, page, currentUser);
+            int userTasks = 0;
+            for (task t : tasks)
+                if (currentUser.isAdmin() || t.getAssignedTo().equals(currentUser))
+                    userTasks++;
+            boolean hasLastPage = userTasks > 0 && page > 1;
+            boolean hasNextPage = userTasks > PAGELENGTH && (page == 1 || userTasks > page*PAGELENGTH);
 
             if (currentUser.isAdmin()) // only admins can do the following:
                 System.out.print(" 1: Create\n" +
@@ -485,17 +489,17 @@ public class main {
                 input.nextLine();
                 continue;
             }
-            choice = Integer.parseInt(input.nextLine());
+            choice = input.nextInt();
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
                     while (target == null) {
 
-                        System.out.print("Target task name: ");
-                        //while (!input.hasNextInt()) {
-                        //    System.out.println("[!] Invalid name\nTarget task name: ");
-                        //    input.nextLine();
-                        //}
-                        target = findTask(tasks, input.next()); // we have an name, find the them in the table
+                        System.out.print("Target task ID: ");
+                        while (!input.hasNextInt()) {
+                            System.out.println("[!] Invalid ID\nTarget task ID: ");
+                            input.nextLine();
+                        }
+                        target = findTask(input.nextInt()); // we have an name, find the them in the table
 
                         if (target == null)
                             System.out.println("[!] Invalid name\n");
@@ -503,7 +507,7 @@ public class main {
                 }
                 switch (choice) {
                     case 1: // create
-                        tasks.add(new task());
+                        tasks.add(new task(currentUser));
                         break;
                     case 2: // modify
                         target.modify(); //each class should have a modify function, similar to how the constructor works
@@ -574,11 +578,13 @@ public class main {
         } while (!terminate);
     }
 
-    private static void ShowTasksTable(ArrayList<task> tasks, int page) {
-        System.out.println("|  id |  color  |      Name      | Assigned To |           Due Date           | Subtasks ");
+    private static void ShowTasksTable(ArrayList<task> tasks, int page, member currentUser) {
+        System.out.println("|  id  |  color  |      Name      |   Assigned To  |           Due Date           | Subtasks ");
         int i=0;
+        int userTasks = 0;
         for (task o : tasks) { // prints only the tasks on the current "page"
-            if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH)
+            if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH
+                    && (currentUser.isAdmin() || o.getAssignedTo().equals(currentUser)))
                 System.out.println(o.toColumns());
             i++;
         }
@@ -634,7 +640,7 @@ public class main {
                             System.out.println("[!] Invalid Name\nTarget Category Name: ");
                             input.nextLine();
                         }
-                        target = findCategory(categories, input.nextLine()); // we have an integer, find the them in the table
+                        target = findCategory(input.nextLine()); // we have an integer, find the them in the table
 
                         if (target == null)
                             System.out.println("[!] Invalid Name\n");
@@ -642,7 +648,7 @@ public class main {
                 }
                 switch (choice) {
                     case 1: // create
-                        categories.add(new category());
+                        categories.add(new category(currentUser));
                         break;
                     case 2: // modify
                         target.modify(); //each class should have a modify function, similar to how the constructor works
@@ -709,7 +715,7 @@ public class main {
     }
 
     private static void ShowCategoryTable(ArrayList<category> categories, int page) {
-        System.out.println("|      Name      |  Color  | Description");
+        System.out.println("|      Name      |  Color  |   Created By   |          Created On          | Description");
         int i=0;
         for (category o : categories) { // prints only the members on the current "page"
             if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH)
@@ -735,7 +741,7 @@ public class main {
     // if (member == null)
     //    //exception code
 
-    private static member findMember(ArrayList<member> members, int memberID) {
+    public static member findMember(int memberID) {
         for (member obj : members) {
             if (obj.getId() == memberID)
                 return obj;
@@ -743,7 +749,7 @@ public class main {
         return null;
     }
 
-    private static team findTeam(ArrayList<team> teams, int teamID) {
+    public static team findTeam(int teamID) {
         for (team obj : teams) {
             if (obj.getId() == teamID)
                 return obj;
@@ -751,21 +757,20 @@ public class main {
         return null;
     }
 
-    private static task findTask(ArrayList<task> tasks, String taskName) {
+    public static task findTask(int taskID) {
         for (task obj : tasks) {
-            if (obj.getName().equals(taskName))
+            if (obj.getID() == taskID)
                 return obj;
         }
         return null;
     }
 
-    private static category findCategory(ArrayList<category> categories, String categoryName) {
+    public static category findCategory(String categoryName) {
         for (category obj : categories) {
             if (obj.getCategoryName().equals(categoryName))
                 return obj;
         }
         return null;
     }
-
 
 }
