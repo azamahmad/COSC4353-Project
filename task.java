@@ -52,7 +52,7 @@ public class task {
         } while (!validated);
         do {
             System.out.print("Assigned to: ");
-            String str = input.nextLine();
+            String str = input.next();
             if (str.length() > 0) {
                 try {
                     member assign = main.findMember(Integer.parseInt(str));
@@ -61,7 +61,7 @@ public class task {
                         break;
                     }
                 } catch (NumberFormatException e) {
-
+                    continue;
                 }
                 System.out.println("Invalid User ID");
             } else {

@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class category {
     private String categoryName, color, description;
+    private int id;
+    private static int currentID = 1; // keeps id's unique
     private member createdBy;
     private Date createdOn;
 
@@ -15,6 +17,8 @@ public class category {
         createdOn = new Date();
         System.out.println("Enter new category name: ");
         categoryName = sc.nextLine();
+        id = currentID++;
+        System.out.println("ID is " + id);
         //categories.add(categoryName);
         System.out.println(categoryName + " category created");
 
@@ -54,9 +58,9 @@ public class category {
     }
 
     public String toColumns() {
-        // format:           "|      Name      |  Color  | Description"
-        // format:           "|      Name      |  Color  |   Created By   |          Created On          | Description"
-        return String.format("| %14s | %7s | %14s | %28s | %s",
+        // format:           "|  id  |      Name      |  Color  |   Created By   |          Created On          | Description"
+        return String.format("| % 3d | %14s | %7s | %14s | %28s | %s",
+                id,
                 categoryName,
                 color,
                 createdBy.getName(),
@@ -78,6 +82,10 @@ public class category {
 
     public member getCreatedBy() {
         return createdBy;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Date getCreatedOn() {

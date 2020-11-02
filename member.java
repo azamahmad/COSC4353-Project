@@ -26,7 +26,7 @@ public class member {
         id = currentID++;
         System.out.println("ID is " + id);
         System.out.println("Password: ");
-        String password = input.next();
+        String password = input.nextLine();
         setPassword(password);
         admin = false; // figure out how setting admin works
         do {

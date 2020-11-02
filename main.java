@@ -203,21 +203,22 @@ public class main {
             }
 
             System.out.print("Choice: ");
-            if (!input.hasNextInt()) {
+            try {
+                choice = Integer.parseInt(input.next());
+            } catch (NumberFormatException e) {
                 System.out.println("[!] Please enter a valid option.\n");
-                input.nextLine();
                 continue;
             }
-            choice = input.nextInt();
+
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
                     while (target == null) {
                         System.out.print("Target userID: ");
                         while (!input.hasNextInt()) {
                             System.out.println("[!] Invalid ID\nTarget userID: ");
-                            input.nextLine();
+                            input.next();
                         }
-                        target = findMember(Integer.parseInt(input.next())); // we have an integer, find the them in the table
+                        target = findMember(input.nextInt()); // we have an integer, find the them in the table
 
                         if (target == null)
                             System.out.println("[!] Invalid ID\n");
@@ -237,9 +238,9 @@ public class main {
                             System.out.printf("Do you really want to delete user \"%s\" id \"%s\"? (Y/N) ",
                                     target.getName(),
                                     target.getId());
-                            String str = input.nextLine();
+                            String str = "";
                             while (str.length() == 0) {
-                                str = input.nextLine();
+                                str = input.next();
                             }
                             char c = str.charAt(0);
                             if (c == 'y' || c == 'Y') {
@@ -342,21 +343,22 @@ public class main {
             }
 
             System.out.print("Choice: ");
-            if (!input.hasNextInt()) {
+            try {
+                choice = Integer.parseInt(input.next());
+            } catch (NumberFormatException e) {
                 System.out.println("[!] Please enter a valid option.\n");
-                input.nextLine();
                 continue;
             }
-            choice = Integer.parseInt(input.nextLine());
+
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
                     while (target == null) {
                         System.out.print("Target userID: ");
                         while (!input.hasNextInt()) {
-                            System.out.println("[!] Invalid ID\nTarget userID: ");
-                            input.nextLine();
+                            System.out.println("[!] Invalid ID\nTarget Menu ID: ");
+                            input.next();
                         }
-                        target = findTeam(Integer.parseInt(input.next())); // we have an integer, find the them in the table
+                        target = findTeam(input.nextInt()); // we have an integer, find the them in the table
 
                         if (target == null)
                             System.out.println("[!] Invalid ID\n");
@@ -374,9 +376,9 @@ public class main {
                             System.out.printf("Do you really want to delete team \"%s\" id \"%s\"? (Y/N) ",
                                     target.getTeamName(),
                                     target.getId());
-                            String str = input.nextLine();
+                            String str = "";
                             while (str.length() == 0) {
-                                str = input.nextLine();
+                                str = input.next();
                             }
                             char c = str.charAt(0);
                             if (c == 'y' || c == 'Y') {
@@ -484,12 +486,13 @@ public class main {
             }
 
             System.out.print("Choice: ");
-            if (!input.hasNextInt()) {
+            try {
+                choice = Integer.parseInt(input.next());
+            } catch (NumberFormatException e) {
                 System.out.println("[!] Please enter a valid option.\n");
-                input.nextLine();
                 continue;
             }
-            choice = input.nextInt();
+
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
                     while (target == null) {
@@ -497,7 +500,7 @@ public class main {
                         System.out.print("Target task ID: ");
                         while (!input.hasNextInt()) {
                             System.out.println("[!] Invalid ID\nTarget task ID: ");
-                            input.nextLine();
+                            input.next();
                         }
                         target = findTask(input.nextInt()); // we have an name, find the them in the table
 
@@ -518,10 +521,10 @@ public class main {
                         //} else {
                         System.out.printf("Do you really want to delete task \"%s\" id \"%s\"? (Y/N) ",
                                 target.getName(),
-                                target.getID());
-                        String str = input.nextLine();
+                                target.getId());
+                        String str = "";
                         while (str.length() == 0) {
-                            str = input.nextLine();
+                            str = input.next();
                         }
                         char c = str.charAt(0);
                         if (c == 'y' || c == 'Y') {
@@ -626,21 +629,22 @@ public class main {
             }
 
             System.out.print("Choice: ");
-            if (!input.hasNextInt()) {
+            try {
+                choice = Integer.parseInt(input.next());
+            } catch (NumberFormatException e) {
                 System.out.println("[!] Please enter a valid option.\n");
-                input.nextLine();
                 continue;
             }
-            choice = Integer.parseInt(input.nextLine());
+
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
                     while (target == null) {
                         System.out.print("Target Category Name: ");
-                        while (!input.hasNextLine()) {
+                        while (!input.hasNextInt()) {
                             System.out.println("[!] Invalid Name\nTarget Category Name: ");
-                            input.nextLine();
+                            input.next();
                         }
-                        target = findCategory(input.nextLine()); // we have an integer, find the them in the table
+                        target = findCategory(input.nextInt()); // we have an integer, find the them in the table
 
                         if (target == null)
                             System.out.println("[!] Invalid Name\n");
@@ -656,9 +660,9 @@ public class main {
                     case 3: // delete
                         System.out.printf("Do you really want to delete category \"%s\"? (Y/N) ",
                                 target.getCategoryName());
-                        String str = input.nextLine();
+                        String str = "";
                         while (str.length() == 0) {
-                            str = input.nextLine();
+                            str = input.next();
                         }
                         char c = str.charAt(0);
                         if (c == 'y' || c == 'Y') {
@@ -715,7 +719,7 @@ public class main {
     }
 
     private static void ShowCategoryTable(ArrayList<category> categories, int page) {
-        System.out.println("|      Name      |  Color  |   Created By   |          Created On          | Description");
+        System.out.println("|  Id  |      Name      |  Color  |   Created By   |          Created On          | Description");
         int i=0;
         for (category o : categories) { // prints only the members on the current "page"
             if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH)
@@ -765,9 +769,9 @@ public class main {
         return null;
     }
 
-    public static category findCategory(String categoryName) {
+    public static category findCategory(int categoryID) {
         for (category obj : categories) {
-            if (obj.getCategoryName().equals(categoryName))
+            if (obj.getId() == categoryID)
                 return obj;
         }
         return null;
