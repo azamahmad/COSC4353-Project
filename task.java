@@ -15,7 +15,7 @@ public class task {
     private String status;
     private String color;
 
-    public task(member currentUser){
+    public task(Scanner input, member currentUser){
 //        this.ID = nextID++;
 //        name        = "unnamed task"
 //        description = "N/A";
@@ -27,9 +27,6 @@ public class task {
 //        status      = ""; //what type?
 //        color       = Color.blue;
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
-        boolean validated;
-
-        Scanner input = new Scanner(System.in);
         do {
             System.out.print("Task name: ");
             name = input.nextLine();
@@ -44,12 +41,11 @@ public class task {
             System.out.print("Due date for task(MM-DD-YYYY HH:MM AM/PM): ");
             try {
                 dueDate = df.parse(input.nextLine());
-                validated = true;
+                break;
             } catch(java.text.ParseException e) {
                 System.out.println("Invalid date.");
-                validated = false;
             }
-        } while (!validated);
+        } while (true);
         do {
             System.out.print("Assigned to: ");
             String str = input.next();
@@ -73,6 +69,7 @@ public class task {
         createdBy = currentUser;
         status = "active";
         System.out.print("Color: ");
+        main.skipEmptyLine(input);
         color = input.nextLine();
     }
 
@@ -97,12 +94,11 @@ public class task {
         this.color = color;
     }
 
-    public void modify() {
+    public void modify(Scanner input) {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         member assign;
 
         System.out.println("Enter a blank line to keep current value.");
-        Scanner input = new Scanner(System.in);
         String str;
         System.out.printf("Task name(%s): ", name);
         str = input.nextLine();
@@ -181,7 +177,7 @@ public class task {
                 subtasks);
     }
 
-    public int getID() {
+    public int getId() {
         return ID;
     }
 

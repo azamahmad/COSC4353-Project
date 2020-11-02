@@ -15,8 +15,8 @@ public class member {
     private String additional;
     private boolean validated;
 
-    member(){
-        Scanner input = new Scanner(System.in);
+    member(Scanner input){
+        main.skipEmptyLine(input);
         do {
             System.out.println("Input member name:");
             name = input.nextLine();
@@ -34,13 +34,13 @@ public class member {
             color = input.nextLine();
         } while (color.length() == 0);
         System.out.println("Color is " + color);
-        System.out.println("Additional member information (can leave empty):");
+        System.out.println("Additional member information (optional):");
         additional = input.nextLine();
     }
 
-    public void modify() {
+    public void modify(Scanner input) {
+        main.skipEmptyLine(input);
         System.out.println("Enter a blank line to keep current value.");
-        Scanner input = new Scanner(System.in);
         String str;
         System.out.printf("Member name(%s): ", name);
         str = input.nextLine();

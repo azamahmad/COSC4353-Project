@@ -11,8 +11,7 @@ public class category {
     private member createdBy;
     private Date createdOn;
 
-    category(member currentUser) {
-        Scanner sc = new Scanner(System.in);
+    category(Scanner sc, member currentUser) {
         createdBy = currentUser;
         createdOn = new Date();
         System.out.println("Enter new category name: ");
@@ -20,11 +19,11 @@ public class category {
         id = currentID++;
         System.out.println("ID is " + id);
         //categories.add(categoryName);
-        System.out.println(categoryName + " category created");
+        System.out.println("Created category " + categoryName);
 
         System.out.println("Enter color for new category: ");
         color = sc.nextLine();
-        System.out.println("category color: " + color);
+        System.out.println("Category color: " + color);
 
         System.out.println("Enter description for category: ");
         description = sc.nextLine();
@@ -39,7 +38,7 @@ public class category {
         str = input.nextLine();
         if (str.length() > 0) // do this to keep the original value if no input was given
             categoryName = str;
-        System.out.printf("Category name is %s: ", categoryName);
+        System.out.println("Category name is " + categoryName);
         System.out.printf("Category color(%s): ", color);
         str = input.nextLine();
         if (str.length() > 0)
@@ -59,7 +58,7 @@ public class category {
 
     public String toColumns() {
         // format:           "|  id  |      Name      |  Color  |   Created By   |          Created On          | Description"
-        return String.format("| % 3d | %14s | %7s | %14s | %28s | %s",
+        return String.format("| % 4d | %14s | %7s | %14s | %28s | %s",
                 id,
                 categoryName,
                 color,

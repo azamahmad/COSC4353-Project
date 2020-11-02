@@ -5,10 +5,10 @@ import java.util.concurrent.CancellationException;
 
 public class main {
     private final static int PAGELENGTH = 5; // displays N items per page
-    static ArrayList<member> members = new ArrayList<>();
-    static ArrayList<team> teams = new ArrayList<>();
-    static ArrayList<task> tasks = new ArrayList<>();
-    static ArrayList<category> categories = new ArrayList<>();
+    private static ArrayList<member> members = new ArrayList<>();
+    private static ArrayList<team> teams = new ArrayList<>();
+    private static ArrayList<task> tasks = new ArrayList<>();
+    private static ArrayList<category> categories = new ArrayList<>();
 
     public static void main(String arg[]) {
         Scanner input = new Scanner(System.in);
@@ -21,7 +21,10 @@ public class main {
 
         try {
             System.out.println("[!] Demo userID: 1\n[!] Demo password: password");
-            currentUser = MenuLogin(members);
+            if (false) // debug mode
+                currentUser = members.get(0);
+            else
+                currentUser = MenuLogin(input, members);
         } catch (CancellationException e){
             return; // closes if the user canceled logging in. In other contexts, you could ignore this and resume
         }
@@ -47,23 +50,24 @@ public class main {
             switch (choice) {
                 case 1:
 //                    members.add(new member());
-                    MenuMember(members, currentUser);
+                    MenuMember(members, currentUser, input);
                     break;
                 case 2:
                     //System.out.println("Not updated yet");
-                    MenuTeam(teams, currentUser);
+                    MenuTeam(teams, currentUser, input);
                     break;
                 case 3:
                     //System.out.println("Not updated yet");
-                    MenuTask(tasks, currentUser);
+                    MenuTask(tasks, currentUser, input);
                     break;
                 case 4:
-                    MenuCategory(categories, currentUser);
+                    MenuCategory(categories, currentUser, input);
                     break;
                 case 5: // logout
                     try {
                         System.out.println("[!] Demo userID: 1\n[!] Demo password: password");
-                        currentUser = MenuLogin(members);
+                        skipEmptyLine(input);
+                        currentUser = MenuLogin(input, members);
                     } catch (CancellationException e) {
                         terminate = true;
                     }
@@ -74,6 +78,7 @@ public class main {
             }
         } while (!terminate);
         // we can now run code that closes/saves/displays.
+        input.close();
 /*
         System.out.println("List of members: ");
         for (member member : members) {
@@ -131,10 +136,9 @@ public class main {
     // This handles logging in. If the user sends an newline for the user ID, it throws CancellationException.
     // See main for examples of how to use this.
     // If you need the user to verify their password to do an action, see call the member.java authenticate function
-    private static member MenuLogin(ArrayList<member> members)
+    private static member MenuLogin(Scanner input, ArrayList<member> members)
             throws CancellationException {
         // MenuLogin throws an error if user cancels logging in. Use this to resume session as current user OR terminate
-        Scanner input = new Scanner(System.in);
         String str;
         int memberID;
         String password;
@@ -177,8 +181,7 @@ public class main {
     // ShowMemberTable (and other Show____table's) just handle displaying list of data one "page" at a time.
     // We can remove it later, but it might be better than seeing all the data at once.
 
-    private static void MenuMember(ArrayList<member> members, member currentUser) {
-        Scanner input = new Scanner(System.in);
+    private static void MenuMember(ArrayList<member> members, member currentUser, Scanner input) {
         int choice;
         member target;
         boolean terminate = false;
@@ -226,10 +229,10 @@ public class main {
                 }
                 switch (choice) {
                     case 1: // create
-                        members.add(new member());
+                        members.add(new member(input));
                         break;
                     case 2: // modify
-                        target.modify(); //each class should have a modify function, similar to how the constructor works
+                        target.modify(input); //each class should have a modify function, similar to how the constructor works
                         break;
                     case 3: // delete
                         if (target == currentUser) {
@@ -259,11 +262,15 @@ public class main {
                             page -= 1;
                             break;
                         }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
                     case 6: //page forward (only works if there is a next page)
                         if (hasNextPage) {
                             page += 1;
                             break;
                         }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
                     default:
                         System.out.println("[!] Please enter a valid option");
                         break;
@@ -298,7 +305,7 @@ public class main {
     }
 
     private static void ShowMemberTable(ArrayList<member> members, int page) {
-        System.out.println("|  id |  color  |      Name      | Admin | Additional information ");
+        System.out.println("|  id  |  color  |      Name      | Admin | Additional information ");
         int i=0;
         for (member o : members) { // prints only the members on the current "page"
             if (i >= (page-1)*PAGELENGTH && i < page*PAGELENGTH)
@@ -317,8 +324,7 @@ public class main {
         }
     }
 
-    private static void MenuTeam(ArrayList<team> teams, member currentUser) {
-        Scanner input = new Scanner(System.in);
+    private static void MenuTeam(ArrayList<team> teams, member currentUser, Scanner input) {
         int choice;
         team target;
         boolean terminate = false;
@@ -353,7 +359,7 @@ public class main {
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
                     while (target == null) {
-                        System.out.print("Target userID: ");
+                        System.out.print("Target Menu ID: ");
                         while (!input.hasNextInt()) {
                             System.out.println("[!] Invalid ID\nTarget Menu ID: ");
                             input.next();
@@ -367,10 +373,10 @@ public class main {
                 switch (choice) {
                     case 1: // create
                         //System.out.println("Feature unavailable.\n");
-                        teams.add(new team());
+                        teams.add(new team(input));
                         break;
                     case 2: // modify
-                        target.modify(); //each class should have a modify function, similar to how the constructor works
+                        target.modify(input); //each class should have a modify function, similar to how the constructor works
                         break;
                     case 3: // delete
                             System.out.printf("Do you really want to delete team \"%s\" id \"%s\"? (Y/N) ",
@@ -397,11 +403,15 @@ public class main {
                             page -= 1;
                             break;
                         }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
                     case 6: //page forward (only works if there is a next page)
                         if (hasNextPage) {
                             page += 1;
                             break;
                         }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
                     default:
                         System.out.println("[!] Please enter a valid option");
                         break;
@@ -456,8 +466,7 @@ public class main {
         }
     }
 
-    private static void MenuTask(ArrayList<task> tasks, member currentUser) {
-        Scanner input = new Scanner(System.in);
+    private static void MenuTask(ArrayList<task> tasks, member currentUser, Scanner input) {
         int choice;
         task target;
         boolean terminate = false;
@@ -505,15 +514,15 @@ public class main {
                         target = findTask(input.nextInt()); // we have an name, find the them in the table
 
                         if (target == null)
-                            System.out.println("[!] Invalid name\n");
+                            System.out.println("[!] Invalid ID\n");
                     }
                 }
                 switch (choice) {
                     case 1: // create
-                        tasks.add(new task(currentUser));
+                        tasks.add(new task(input, currentUser));
                         break;
                     case 2: // modify
-                        target.modify(); //each class should have a modify function, similar to how the constructor works
+                        target.modify(input); //each class should have a modify function, similar to how the constructor works
                         break;
                     case 3: // delete
                         //if (target == currentUser) {
@@ -543,11 +552,15 @@ public class main {
                             page -= 1;
                             break;
                         }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
                     case 6: //page forward (only works if there is a next page)
                         if (hasNextPage) {
                             page += 1;
                             break;
                         }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
                     default:
                         System.out.println("[!] Please enter a valid option");
                         break;
@@ -603,8 +616,7 @@ public class main {
         }
     }
 
-    private static void MenuCategory(ArrayList<category> categories, member currentUser) {
-        Scanner input = new Scanner(System.in);
+    private static void MenuCategory(ArrayList<category> categories, member currentUser, Scanner input) {
         int choice;
         category target;
         boolean terminate = false;
@@ -647,12 +659,12 @@ public class main {
                         target = findCategory(input.nextInt()); // we have an integer, find the them in the table
 
                         if (target == null)
-                            System.out.println("[!] Invalid Name\n");
+                            System.out.println("[!] Invalid Category ID\n");
                     }
                 }
                 switch (choice) {
                     case 1: // create
-                        categories.add(new category(currentUser));
+                        categories.add(new category(input, currentUser));
                         break;
                     case 2: // modify
                         target.modify(); //each class should have a modify function, similar to how the constructor works
@@ -680,11 +692,15 @@ public class main {
                             page -= 1;
                             break;
                         }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
                     case 6: //page forward (only works if there is a next page)
                         if (hasNextPage) {
                             page += 1;
                             break;
                         }
+                        System.out.println("[!] Please enter a valid option");
+                        break;
                     default:
                         System.out.println("[!] Please enter a valid option");
                         break;
@@ -763,7 +779,7 @@ public class main {
 
     public static task findTask(int taskID) {
         for (task obj : tasks) {
-            if (obj.getID() == taskID)
+            if (obj.getId() == taskID)
                 return obj;
         }
         return null;
@@ -777,4 +793,11 @@ public class main {
         return null;
     }
 
+    public static void skipEmptyLine(Scanner input) { // hotfix for using scanner.next() followed by scanner.nextLine()
+        try {
+            input.skip("\n");
+        }catch (Exception ignore) {
+
+        }
+    }
 }

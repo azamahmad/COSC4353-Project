@@ -1,7 +1,6 @@
 import java.util.Scanner;
 
 public class team {
-    private boolean validated;
     private String teamName;
     private String color;
     private static int currentID = 1;
@@ -9,8 +8,7 @@ public class team {
     private String additional;
 
     
-    team(){
-        Scanner input = new Scanner(System.in);
+    team(Scanner input){
 
         do{
             System.out.print("Input team name:");
@@ -28,18 +26,17 @@ public class team {
 
         System.out.println("Color is " + color);
 
-        System.out.println("Additional team information (can leave empty):");
+        System.out.println("Additional team information (optional):");
         additional = input.nextLine();
     }
 
 
-    public void modify() {
+    public void modify(Scanner input) {
         System.out.println("Enter a blank line to keep current value.");
-        Scanner input = new Scanner(System.in);
         String str;
         System.out.printf("Team name(%s): ", teamName);
         str = input.nextLine();
-        if (teamName.length() > 0) // do this to keep the original value if no input was given
+        if (str.length() > 0) // do this to keep the original value if no input was given
             teamName = str;
         System.out.println("Team name is " + teamName);
         System.out.printf("Color(%s): ", color);
