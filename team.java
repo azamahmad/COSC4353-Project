@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class team {
@@ -6,7 +7,7 @@ public class team {
     private static int currentID = 1;
     private int id;
     private String additional;
-
+    private ArrayList<member> teamMembers;
     
     team(Scanner input){
         main.skipEmptyLine(input);
@@ -28,6 +29,9 @@ public class team {
 
         System.out.println("Additional team information (optional):");
         additional = input.nextLine();
+
+        teamMembers = new ArrayList<>();
+        menuAddMember(input);
     }
 
 
@@ -48,6 +52,9 @@ public class team {
         str = input.nextLine();
         if (str.length() > 0)
             additional = str;
+
+        menuAddMember(input);
+        menuRemoveMember(input);
     }
 
     public team(String name, String color) {
@@ -55,6 +62,7 @@ public class team {
         this.id = currentID++;
         this.color = color;
         this.additional = "";
+        this.teamMembers = new ArrayList<>();
     }
 
     void print(){
@@ -83,5 +91,95 @@ public class team {
 
     public int getId() {
         return id;
+    }
+
+    public boolean hasMember(member user) {
+        return teamMembers.contains(user);
+    }
+
+    public boolean addMember(member user) { // returns true if member was successfully added
+        if (this.hasMember(user)) {
+            return false;
+        } else {
+            teamMembers.add(user);
+            return true;
+        }
+    }
+
+    public boolean removeMember(member user) { // returns true if member was successfully removed
+        if (!this.hasMember(user)) {
+            return false;
+        } else {
+            teamMembers.remove(user);
+            return true;
+        }
+    }
+
+    public void showTeam() {
+        System.out.printf("[ Team: %s ]\n", teamName);
+        if (additional.length() > 0)
+            System.out.printf("More info: %s\n", additional);
+        System.out.printf("Color: %s\n", color);
+        if (teamMembers.size() > 0) {
+            System.out.println("|  id  |  Name");
+            for (member user : teamMembers)
+                System.out.printf("| % 4d  |  %s\n", user.getId(), user.getName());
+        } else {
+            System.out.println("No team members");
+        }
+        System.out.println();
+    }
+
+    public void menuAddMember(Scanner input) {
+        System.out.println("[ Members ]");
+        main.ShowMemberTable();
+        System.out.println("[!] Add members to your team");
+        member target = null;
+        while (true) {
+            System.out.print("Select user ID(None to cancel): ");
+            String str = input.nextLine();
+            if (str.length() == 0)
+                break;
+            try {
+                target = main.findMember(Integer.parseInt(str)); // we have an integer, find the them in the table
+            } catch (NumberFormatException ignore){
+            }
+            if (target == null) {
+                System.out.println("[!] Invalid ID");
+                continue;
+            }
+            if (this.addMember(target)) {
+                System.out.printf("Added %d (%s) to the team\n", target.getId(), target.getName());
+            } else {
+                System.out.printf("[!] %d (%s) is already in the team\n", target.getId(), target.getName());
+            }
+        }
+    }
+
+    public void menuRemoveMember(Scanner input) {
+        System.out.println("[ Members ]");
+        showTeam();
+        System.out.println("[!] Remove members to your team");
+        member target = null;
+        while (true) {
+            System.out.print("Select user ID(None to cancel): ");
+            String str = input.nextLine();
+            if (str.length() == 0)
+                break;
+            try {
+                target = main.findMember(Integer.parseInt(str)); // we have an integer, find the them in the table
+            } catch (NumberFormatException ignore){
+            }
+            if (target == null) {
+                System.out.println("[!] Invalid ID");
+                continue;
+            }
+            if (this.removeMember(target)) {
+                System.out.printf("Removed %d (%s) to the team\n", target.getId(), target.getName());
+            } else {
+                System.out.printf("[!] %d (%s) is not in the team\n", target.getId(), target.getName());
+            }
+        }
+
     }
 }

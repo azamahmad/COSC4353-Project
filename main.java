@@ -192,9 +192,9 @@ public class main {
             ShowMemberTable();
 
             if (currentUser.isAdmin()) // only admins can do the following:
-                System.out.print(" 1: Create\n" +
-                        " 2: Modify\n" +
-                        " 3: Delete\n" +
+                System.out.print(" 1: Create New Member\n" +
+                        " 2: Modify Member\n" +
+                        " 3: Delete Member\n" +
                         " 4: Back\n");
             else {
                 System.out.println("Only admins can modify users");
@@ -278,7 +278,7 @@ public class main {
         } while (!terminate);
     }
 
-    private static void ShowMemberTable() {
+    public static void ShowMemberTable() {
         System.out.println("|  id  |  color  |      Name      | Admin | Additional information ");
         for (member o : members) {
             System.out.println(o.toColumns());
@@ -297,10 +297,11 @@ public class main {
             ShowTeamsTable();
 
             if (currentUser.isAdmin()) // only admins can do the following:
-                System.out.print(" 1: Create\n" +
-                        " 2: Modify\n" +
-                        " 3: Delete\n" +
-                        " 4: Back\n");
+                System.out.print(" 1: Create New Team\n" +
+                        " 2: Modify Team\n" +
+                        " 3: Delete Team\n" +
+                        " 4: View Team Members\n" +
+                        " 5: Back\n");
             else {
                 System.out.println("Only admins can modify teams");
                 System.out.print(" 1: Back\n");
@@ -315,7 +316,7 @@ public class main {
             }
 
             if (currentUser.isAdmin()) {
-                if (choice == 2 || choice == 3) {
+                if (choice == 2 || choice == 3 || choice == 4) {
                     if (teams.size() == 0) {
                         System.out.println("[!] No teams exist");
                         continue;
@@ -359,7 +360,10 @@ public class main {
                             }
 
                         break;
-                    case 4: // logout
+                    case 4:
+                        target.showTeam();
+                        break;
+                    case 5: // back
                         terminate = true;
                         break;
                     default:
@@ -382,7 +386,7 @@ public class main {
 
     }
 
-    private static void ShowTeamsTable() {
+    public static void ShowTeamsTable() {
         System.out.println("|  id  |  color  |      Name      | Additional information ");
         for (team o : teams) {
             System.out.println(o.toColumns());
@@ -401,9 +405,9 @@ public class main {
             ShowTasksTable(currentUser);
 
             if (currentUser.isAdmin()) // only admins can do the following:
-                System.out.print(" 1: Create\n" +
-                        " 2: Modify\n" +
-                        " 3: Delete\n" +
+                System.out.print(" 1: Create New Task\n" +
+                        " 2: Modify Task\n" +
+                        " 3: Delete Task\n" +
                         " 4: Back\n");
             else {
                 System.out.println("Only admins can modify tasks");
@@ -487,7 +491,7 @@ public class main {
         } while (!terminate);
     }
 
-    private static void ShowTasksTable(member currentUser) {
+    public static void ShowTasksTable(member currentUser) {
         System.out.println("|  id  |  color  |      Name      |   Assigned To  |           Due Date           | Subtasks ");
         for (task o : tasks) { // prints only the tasks that belong to the user OR all tasks if they are an admin
             if (currentUser.isAdmin() || o.getAssignedTo().equals(currentUser))
@@ -507,9 +511,9 @@ public class main {
             ShowCategoryTable();
 
             if (currentUser.isAdmin()) // only admins can do the following:
-                System.out.print(" 1: Create\n" +
-                        " 2: Modify\n" +
-                        " 3: Delete\n" +
+                System.out.print(" 1: Create New Category\n" +
+                        " 2: Modify Category\n" +
+                        " 3: Delete Category\n" +
                         " 4: Back\n");
             else {
                 System.out.println("Only admins can modify users");
@@ -588,7 +592,7 @@ public class main {
         } while (!terminate);
     }
 
-    private static void ShowCategoryTable() {
+    public static void ShowCategoryTable() {
         System.out.println("|  Id  |      Name      |  Color  |   Created By   |          Created On          | Description");
         for (category o : categories) {
             System.out.println(o.toColumns());
