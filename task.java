@@ -16,16 +16,7 @@ public class task {
     private String color;
 
     public task(Scanner input, member currentUser){
-//        this.ID = nextID++;
-//        name        = "unnamed task"
-//        description = "N/A";
-//        subtasks    = "";
-//        dueDate     = new Date();
-//        assignedTo  = new Member();
-//        createdOn   = new Date();
-//        createdBy   = new Member();
-//        status      = ""; //what type?
-//        color       = Color.blue;
+        main.skipEmptyLine(input);
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         do {
             System.out.print("Task name: ");

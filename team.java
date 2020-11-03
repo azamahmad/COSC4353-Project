@@ -9,7 +9,7 @@ public class team {
 
     
     team(Scanner input){
-
+        main.skipEmptyLine(input);
         do{
             System.out.print("Input team name:");
             teamName = input.nextLine();

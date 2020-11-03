@@ -39,7 +39,6 @@ public class member {
     }
 
     public void modify(Scanner input) {
-        main.skipEmptyLine(input);
         System.out.println("Enter a blank line to keep current value.");
         String str;
         System.out.printf("Member name(%s): ", name);

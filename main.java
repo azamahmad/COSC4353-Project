@@ -184,7 +184,7 @@ public class main {
         int choice;
         member target;
         boolean terminate = false;
-
+        menu:
         do {
             target = null;
             System.out.print("[ Members ]\n");
@@ -211,16 +211,26 @@ public class main {
 
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
+                    if (members.size() == 0) {
+                        System.out.println("[!] No members exist");
+                        continue;
+                    }
+                    main.skipEmptyLine(input);
                     while (target == null) {
-                        System.out.print("Target userID: ");
-                        while (!input.hasNextInt()) {
-                            System.out.println("[!] Invalid ID\nTarget userID: ");
-                            input.next();
+                        System.out.print("Target user ID(None to cancel): ");
+                        String str = input.nextLine();
+                        if (str.length() == 0)
+                            continue menu;
+                        try {
+                            target = findMember(Integer.parseInt(str)); // we have an integer, find the them in the table
+                        } catch (NumberFormatException ignore){
                         }
-                        target = findMember(input.nextInt()); // we have an integer, find the them in the table
-
-                        if (target == null)
-                            System.out.println("[!] Invalid ID\n");
+                        if (target == null) {
+                            System.out.println("[!] Invalid ID");
+                        } else if (target == currentUser) {
+                            System.out.println("[!] You cannot delete your own account");
+                            target = null;
+                        }
                     }
                 }
                 switch (choice) {
@@ -231,23 +241,19 @@ public class main {
                         target.modify(input); //each class should have a modify function, similar to how the constructor works
                         break;
                     case 3: // delete
-                        if (target == currentUser) {
-                            System.out.println("[!] You cannot delete your own account");
+                        System.out.printf("Do you really want to delete user \"%s\" id \"%s\"? (Y/N) ",
+                                target.getName(),
+                                target.getId());
+                        String str = "";
+                        while (str.length() == 0) {
+                            str = input.next();
+                        }
+                        char c = str.charAt(0);
+                        if (c == 'y' || c == 'Y') {
+                            members.remove(target);
+                            System.out.println("Confirmed. User was deleted.");
                         } else {
-                            System.out.printf("Do you really want to delete user \"%s\" id \"%s\"? (Y/N) ",
-                                    target.getName(),
-                                    target.getId());
-                            String str = "";
-                            while (str.length() == 0) {
-                                str = input.next();
-                            }
-                            char c = str.charAt(0);
-                            if (c == 'y' || c == 'Y') {
-                                members.remove(target);
-                                System.out.println("Confirmed. User was deleted.");
-                            } else {
-                                System.out.println("Aborted. User was not deleted.");
-                            }
+                            System.out.println("Aborted. User was not deleted.");
                         }
                         break;
                     case 4: // logout
@@ -283,7 +289,7 @@ public class main {
         int choice;
         team target;
         boolean terminate = false;
-
+        menu:
         do {
             target = null;
             System.out.print("[ Teams ]\n");
@@ -310,16 +316,22 @@ public class main {
 
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
+                    if (teams.size() == 0) {
+                        System.out.println("[!] No teams exist");
+                        continue;
+                    }
+                    main.skipEmptyLine(input);
                     while (target == null) {
-                        System.out.print("Target Menu ID: ");
-                        while (!input.hasNextInt()) {
-                            System.out.println("[!] Invalid ID\nTarget Menu ID: ");
-                            input.next();
+                        System.out.print("Target Team ID(None to cancel): ");
+                        String str = input.nextLine();
+                        if (str.length() == 0)
+                            continue menu;
+                        try {
+                            target = findTeam(Integer.parseInt(str)); // we have an integer, find the them in the table
+                        } catch (NumberFormatException ignore) {
                         }
-                        target = findTeam(input.nextInt()); // we have an integer, find the them in the table
-
                         if (target == null)
-                            System.out.println("[!] Invalid ID\n");
+                            System.out.println("[!] Invalid ID");
                     }
                 }
                 switch (choice) {
@@ -381,7 +393,7 @@ public class main {
         int choice;
         task target;
         boolean terminate = false;
-
+        menu:
         do {
             target = null;
             System.out.print("[ Tasks ]\n");
@@ -408,17 +420,22 @@ public class main {
 
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
+                    if (tasks.size() == 0) {
+                        System.out.println("[!] No tasks exist");
+                        continue;
+                    }
+                    main.skipEmptyLine(input);
                     while (target == null) {
-
-                        System.out.print("Target task ID: ");
-                        while (!input.hasNextInt()) {
-                            System.out.println("[!] Invalid ID\nTarget task ID: ");
-                            input.next();
+                        System.out.print("Target task ID(None to cancel): ");
+                        String str = input.nextLine();
+                        if (str.length() == 0)
+                            continue menu;
+                        try {
+                            target = findTask(Integer.parseInt(str)); // we have an name, find the them in the table
+                        } catch (NumberFormatException ignore) {
                         }
-                        target = findTask(input.nextInt()); // we have an name, find the them in the table
-
                         if (target == null)
-                            System.out.println("[!] Invalid ID\n");
+                            System.out.println("[!] Invalid ID");
                     }
                 }
                 switch (choice) {
@@ -482,7 +499,7 @@ public class main {
         int choice;
         category target;
         boolean terminate = false;
-
+        menu:
         do {
             target = null;
             System.out.print("[ Category ]\n");
@@ -509,16 +526,22 @@ public class main {
 
             if (currentUser.isAdmin()) {
                 if (choice == 2 || choice == 3) {
+                    if (categories.size() == 0) {
+                        System.out.println("[!] No categories exist");
+                        continue;
+                    }
+                    main.skipEmptyLine(input);
                     while (target == null) {
-                        System.out.print("Target Category Name: ");
-                        while (!input.hasNextInt()) {
-                            System.out.println("[!] Invalid Name\nTarget Category Name: ");
-                            input.next();
+                        System.out.print("Target Category Name(None to cancel): ");
+                        String str = input.nextLine();
+                        if (str.length() == 0)
+                            continue menu;
+                        try {
+                            target = findCategory(Integer.parseInt(str)); // we have an integer, find the them in the table
+                        } catch (NumberFormatException ignore) {
                         }
-                        target = findCategory(input.nextInt()); // we have an integer, find the them in the table
-
                         if (target == null)
-                            System.out.println("[!] Invalid Category ID\n");
+                            System.out.println("[!] Invalid ID");
                     }
                 }
                 switch (choice) {

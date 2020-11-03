@@ -11,22 +11,23 @@ public class category {
     private member createdBy;
     private Date createdOn;
 
-    category(Scanner sc, member currentUser) {
+    category(Scanner input, member currentUser) {
+        main.skipEmptyLine(input);
         createdBy = currentUser;
         createdOn = new Date();
         System.out.println("Enter new category name: ");
-        categoryName = sc.nextLine();
+        categoryName = input.nextLine();
         id = currentID++;
         System.out.println("ID is " + id);
         //categories.add(categoryName);
         System.out.println("Created category " + categoryName);
 
         System.out.println("Enter color for new category: ");
-        color = sc.nextLine();
+        color = input.nextLine();
         System.out.println("Category color: " + color);
 
         System.out.println("Enter description for category: ");
-        description = sc.nextLine();
+        description = input.nextLine();
         System.out.println(categoryName + " description: " + description);
     }
 
