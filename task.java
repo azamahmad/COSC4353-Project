@@ -28,16 +28,22 @@ public class task {
         } while (description.length() == 0);
         System.out.print("Sub tasks (separated by commas): ");
         subtasks = input.nextLine();
+        Date now = new Date();
         do {
             System.out.print("Due date for task(MM-DD-YYYY HH:MM AM/PM): ");
             try {
                 dueDate = df.parse(input.nextLine());
-                break;
+                if (dueDate.after(now))
+                    break;
+                else
+                    System.out.println("[!] Due date should not be in the past.");
             } catch(java.text.ParseException e) {
                 System.out.println("Invalid date.");
             }
         } while (true);
         do {
+            System.out.println("[ Members ]");
+            main.ShowMemberTable();
             System.out.print("Assigned to: ");
             String str = input.next();
             if (str.length() > 0) {

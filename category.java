@@ -2,7 +2,6 @@
 import java.util.Date;
 import java.util.Scanner;
 
-  //ArrayList<category> categories = new ArrayList<category>();  --From Main.java
 
 public class category {
     private String categoryName, color, description;
@@ -15,14 +14,14 @@ public class category {
         main.skipEmptyLine(input);
         createdBy = currentUser;
         createdOn = new Date();
-        System.out.println("Enter new category name: ");
+        System.out.print("Enter new category name: ");
         categoryName = input.nextLine();
         id = currentID++;
         System.out.println("ID is " + id);
         //categories.add(categoryName);
         System.out.println("Created category " + categoryName);
 
-        System.out.println("Enter color for new category: ");
+        System.out.print("Enter color for new category: ");
         color = input.nextLine();
         System.out.println("Category color: " + color);
 

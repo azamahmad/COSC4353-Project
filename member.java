@@ -13,24 +13,23 @@ public class member {
     private byte salt[];
     private boolean admin;
     private String additional;
-    private boolean validated;
 
     member(Scanner input){
         main.skipEmptyLine(input);
         do {
-            System.out.println("Input member name:");
+            System.out.print("Input member name: ");
             name = input.nextLine();
         } while(name.length() == 0);
 
         System.out.println("Username is " + name);
         id = currentID++;
         System.out.println("ID is " + id);
-        System.out.println("Password: ");
+        System.out.print("Password: ");
         String password = input.nextLine();
         setPassword(password);
         admin = false; // figure out how setting admin works
         do {
-            System.out.println("Input member color:");
+            System.out.print("Input member color: ");
             color = input.nextLine();
         } while (color.length() == 0);
         System.out.println("Color is " + color);
@@ -46,7 +45,7 @@ public class member {
         if (str.length() > 0) // do this to keep the original value if no input was given
             name = str;
         System.out.println("Username is " + name);
-//        System.out.println("Password: ");
+//        System.out.print("Password: ");
         System.out.printf("Color(%s): ", color);
         str = input.nextLine();
         if (str.length() > 0)
@@ -99,6 +98,7 @@ public class member {
     public boolean changePassword(String oldPassword, String newPassword) {
         if (authenticate(oldPassword)) {
             setPassword(newPassword);
+            return true;
         }
         return false;
     }

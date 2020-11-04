@@ -21,13 +21,13 @@ public class team {
         System.out.println("ID is " + id);
 
         do{
-            System.out.println("Input team color:");
+            System.out.print("Input team color:");
             color = input.nextLine();
         }while(color.length() == 0);
 
         System.out.println("Color is " + color);
 
-        System.out.println("Additional team information (optional):");
+        System.out.print("Additional team information (optional): ");
         additional = input.nextLine();
 
         teamMembers = new ArrayList<>();

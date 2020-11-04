@@ -48,15 +48,12 @@ public class main {
             choice = input.nextInt();
             switch (choice) {
                 case 1:
-//                    members.add(new member());
                     MenuMember(currentUser, input);
                     break;
                 case 2:
-                    //System.out.println("Not updated yet");
                     MenuTeam(currentUser, input);
                     break;
                 case 3:
-                    //System.out.println("Not updated yet");
                     MenuTask(currentUser, input);
                     break;
                 case 4:
@@ -78,35 +75,6 @@ public class main {
         } while (!terminate);
         // we can now run code that closes/saves/displays.
         input.close();
-/*
-        System.out.println("List of members: ");
-        for (member member : members) {
-            member.print();
-            System.out.println();
-        }
-        System.out.println();
-
-        System.out.println("List of teams:");
-        for (team team : teams) {
-            team.print();
-            System.out.println();
-        }
-        System.out.println();
-
-        System.out.println("List of tasks:");
-        for(task task : tasks){
-            task.print();
-            System.out.println();
-        }
-        System.out.println();
-
-        System.out.println("List of categories:");
-        for(category category : categories){
-            category.print();
-            System.out.println();
-        }
-        System.out.println();
-*/
     }
 
     private static void initDefaultData(ArrayList<member> members,
@@ -337,7 +305,6 @@ public class main {
                 }
                 switch (choice) {
                     case 1: // create
-                        //System.out.println("Feature unavailable.\n");
                         teams.add(new team(input));
                         break;
                     case 2: // modify
@@ -450,9 +417,6 @@ public class main {
                         target.modify(input); //each class should have a modify function, similar to how the constructor works
                         break;
                     case 3: // delete
-                        //if (target == currentUser) {
-                        //    System.out.println("[!] You cannot delete your own account");
-                        //} else {
                         System.out.printf("Do you really want to delete task \"%s\" id \"%s\"? (Y/N) ",
                                 target.getName(),
                                 target.getId());
