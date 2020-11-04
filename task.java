@@ -70,15 +70,8 @@ public class task {
         color = input.nextLine();
     }
 
-    public task(String name,
-                String description,
-                String subtasks,
-                Date dueDate,
-                member assignedTo,
-                Date createdOn,
-                member createdBy,
-                String status,
-                String color) {
+    public task(String name, member createdBy, member assignedTo, Date createdOn, Date dueDate, String color,
+                String description, String status, String subtasks) {
         this.ID = currentID++;
         this.name = name;
         this.description = description;
@@ -164,12 +157,13 @@ public class task {
     }
 
     public String toColumns() {
-        // format:           "|  id  |  color  |      Name      |   Assigned To  |           Due Date           | Subtasks "
-        return String.format("| % 4d | %7s | %14s | %14s | %28s | %s",
+        // format:           "|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           | Subtasks "
+        return String.format("| % 4d | %6s | %14s | %14s | %7s | %28s | %s",
                 ID,
-                color,
+                status,
                 name,
                 assignedTo.getName(),
+                color,
                 dueDate,
                 subtasks);
     }
@@ -208,6 +202,15 @@ public class task {
 
     public String getStatus() {
         return status;
+    }
+
+    public void toggleStatus() { // TODO: add completedOn variable
+        if (status.equals("active")) {
+            status = "done";
+
+        } else {
+            status = "active";
+        }
     }
 
     public String getColor() {

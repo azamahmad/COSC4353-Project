@@ -1,4 +1,7 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.CancellationException;
@@ -31,14 +34,13 @@ public class main {
         int choice;
         boolean terminate = false;
         do {
-            System.out.printf(
-                    "[ Main Menu ]\n" +
-                    "Welcome, %s, please select a submenu:\n" +
-                    " 1: Members\n" +
-                    " 2: Teams\n" +
-                    " 3: Tasks\n" +
-                    " 4: Categories\n" +
-                    " 5: Logout\n", currentUser.getName());
+            System.out.println("[ Main Menu ]");
+            System.out.printf("Welcome, %s, please select a submenu:\n", currentUser.getName());
+            System.out.println(" 1: Members");
+            System.out.println(" 2: Teams");
+            System.out.println(" 3: Tasks");
+            System.out.println(" 4: Categories");
+            System.out.println(" 5: Logout");
             System.out.print("Choice: ");
             if (!input.hasNextInt()) {
                 System.out.println("[!] Please enter a valid option.\n");
@@ -81,21 +83,53 @@ public class main {
                                         ArrayList<team> teams,
                                         ArrayList<task> tasks,
                                         ArrayList<category> categories) {
-        members.add(new member("Admin account", "password", "Red", true)); // user id 1
-        members.add(new member("Nina Carlson", "weakpassword", "Pink", false));    // user id 2
-        members.add(new member("Rocky Rhodes", "letmein", "Brown", false));  // user id 3
-        members.add(new member("Mike Wazowski", "letmein", "Green", false));  // user id 4
-        members.add(new member("Chucky Cheese", "letmein", "Grey", false));  // user id 5
-        members.add(new member("Hyper Baby", "letmein", "Brown", false));  // user id 6
+        SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
+        // member 1
+        members.add(new member("Admin account", "password", "Red", "", true));
+        // member 2
+        members.add(new member("Nina Carlson", "weakpassword", "Pink", "", false));
+        // member 3
+        members.add(new member("Rocky Rhodes", "letmein", "Brown", "", false));
+        // member 4
+        members.add(new member("Mike Wazowski", "letmein", "Green", "", false));
+        // member 5
+        members.add(new member("Hyper Baby", "letmein", "Brown", "", false));
+        try {
+            // team 1
+            teams.add(new team("Big Brains Team", findMember(5), df.parse("2020-08-21 04:23 PM"), "Pink", "Brain big"));
+            // team 2
+            teams.add(new team("Team Rocket", findMember(1), df.parse("1997-06-01 12:00 PM"), "Red", "pweeeew . . . twinkle"));
+            // team 3
+            teams.add(new team("Justice League", findMember(1), df.parse("1960-06-01 12:00 PM"), "Blue", ""));
 
-        teams.add(new team("Big Brains Team","Pink")); // team id 1
-        teams.add(new team("Team Rocket","Red")); // team id 2
-        teams.add(new team("Justice League","Blue")); // team id 3
-        teams.add(new team("X-Men","Pink")); // team id 4
+            // task 1
+            tasks.add(new task("Sort the parts",
+                    findMember(1), findMember(2), df.parse("2020-10-01 04:23 PM"), df.parse("2020-12-06 10:00 AM"), "pink", "", "active", "The monkey brains got mixed in with the scatter brains, please sort"));
+            // task 2
+            tasks.add(new task("Paint the room",
+                    findMember(1), findMember(5), df.parse("2020-11-04 12:28 AM"), df.parse("2020-12-25 02:00 PM"), "pink", "", "active", "Paint every other square inch of the room blue"));
+            // task 3
+            tasks.add(new task("Count to ten",
+                    findMember(1), findMember(3), df.parse("1998-12-06 03:42 AM"), df.parse("2020-12-06 11:59 PM"), "grey", "", "done", "Then count to eleven, count to twelve, ad infinitum"));
 
-//        tasks.add()
-
-
+            // category 1
+            categories.add(new category("Demo Tasks", findMember(1), new Date(), "Blue",
+                    "These are the pre-made tasks created to populate the program"));
+            category category = findCategory(1);
+            if (category != null) {
+                category.addTask(findTask(1));
+                category.addTask(findTask(2));
+                category.addTask(findTask(3));
+            }
+            team team = findTeam(1);
+            if (team != null) {
+                team.addMember(findMember(2));
+                team.addMember(findMember(3));
+                team.addMember(findMember(4));
+            }
+        } catch (ParseException ignore) {
+            System.out.println("[!] Some of the test data could not be generated. I have no idea how.");
+        }
     }
 
     // Menu screens
@@ -159,14 +193,15 @@ public class main {
             // display the list
             ShowMemberTable();
 
-            if (currentUser.isAdmin()) // only admins can do the following:
-                System.out.print(" 1: Create New Member\n" +
-                        " 2: Modify Member\n" +
-                        " 3: Delete Member\n" +
-                        " 4: Back\n");
-            else {
-                System.out.println("Only admins can modify users");
-                System.out.print(" 1: Back\n");
+            if (currentUser.isAdmin()) { // only admins can do the following:
+                System.out.println(" 1: Create New Member");
+                System.out.println(" 2: Modify Member");
+                System.out.println(" 3: Delete Member");
+                System.out.println(" 4: Back");
+            } else {
+                System.out.println(" 1: Modify your account");
+                System.out.println(" 2: Promote to admin");
+                System.out.println(" 3: Back");
             }
 
             System.out.print("Choice: ");
@@ -233,11 +268,17 @@ public class main {
                 }
             } else { //regular user
                 switch (choice) {
-                    case 1: // back
+                    case 1: // self modify user
+                        main.skipEmptyLine(input);
+                        currentUser.modify(input);
+                        break;
+                    case 2: // promote to admin
+                        main.skipEmptyLine(input);
+                        honeypot(input, currentUser);
+                        break;
+                    case 3: // back
                         terminate = true;
                         break;
-//                    case 2: //should allow self modification of their OWN, non-admin, account
-//                        break
                     default:
                         System.out.println("[!] Please enter a valid option");
                         break;
@@ -247,7 +288,7 @@ public class main {
     }
 
     public static void ShowMemberTable() {
-        System.out.println("|  id  |  color  |      Name      | Admin | Additional information ");
+        System.out.println("|  Id  |      Name      | Admin |  color  | Additional information ");
         for (member o : members) {
             System.out.println(o.toColumns());
         }
@@ -264,16 +305,11 @@ public class main {
             // display the list
             ShowTeamsTable();
 
-            if (currentUser.isAdmin()) // only admins can do the following:
-                System.out.print(" 1: Create New Team\n" +
-                        " 2: Modify Team\n" +
-                        " 3: Delete Team\n" +
-                        " 4: View Team Members\n" +
-                        " 5: Back\n");
-            else {
-                System.out.println("Only admins can modify teams");
-                System.out.print(" 1: Back\n");
-            }
+            System.out.println(" 1: Create New Team");
+            System.out.println(" 2: Modify Team");
+            System.out.println(" 3: Delete Team");
+            System.out.println(" 4: View Team Members");
+            System.out.println(" 5: Back");
 
             System.out.print("Choice: ");
             try {
@@ -282,79 +318,72 @@ public class main {
                 System.out.println("[!] Please enter a valid option.\n");
                 continue;
             }
-
-            if (currentUser.isAdmin()) {
-                if (choice == 2 || choice == 3 || choice == 4) {
-                    if (teams.size() == 0) {
-                        System.out.println("[!] No teams exist");
-                        continue;
-                    }
-                    main.skipEmptyLine(input);
-                    while (target == null) {
-                        System.out.print("Target Team ID(None to cancel): ");
-                        String str = input.nextLine();
-                        if (str.length() == 0)
-                            continue menu;
-                        try {
-                            target = findTeam(Integer.parseInt(str)); // we have an integer, find the them in the table
-                        } catch (NumberFormatException ignore) {
-                        }
-                        if (target == null)
-                            System.out.println("[!] Invalid ID");
-                    }
+            if (choice == 2 || choice == 3 || choice == 4) {
+                if (teams.size() == 0) {
+                    System.out.println("[!] No teams exist");
+                    continue;
                 }
-                switch (choice) {
-                    case 1: // create
-                        teams.add(new team(input));
-                        break;
-                    case 2: // modify
-                        target.modify(input); //each class should have a modify function, similar to how the constructor works
-                        break;
-                    case 3: // delete
-                            System.out.printf("Do you really want to delete team \"%s\" id \"%s\"? (Y/N) ",
-                                    target.getTeamName(),
-                                    target.getId());
-                            String str = "";
-                            while (str.length() == 0) {
-                                str = input.next();
-                            }
-                            char c = str.charAt(0);
-                            if (c == 'y' || c == 'Y') {
-                                teams.remove(target);
-                                System.out.println("Confirmed. Team was deleted.");
-                            } else {
-                                System.out.println("Aborted. Team was not deleted.");
-                            }
-
-                        break;
-                    case 4:
-                        target.showTeam();
-                        break;
-                    case 5: // back
-                        terminate = true;
-                        break;
-                    default:
-                        System.out.println("[!] Please enter a valid option");
-                        break;
-                }
-            } else { //regular user
-                switch (choice) {
-                    case 1: // back
-                        terminate = true;
-                        break;
-//                    case 2: //should allow self modification of their OWN, non-admin, account
-//                        break
-                    default:
-                        System.out.println("[!] Please enter a valid option");
-                        break;
+                main.skipEmptyLine(input);
+                while (target == null) {
+                    System.out.print("Target Team ID(None to cancel): ");
+                    String str = input.nextLine();
+                    if (str.length() == 0)
+                        continue menu;
+                    try {
+                        target = findTeam(Integer.parseInt(str)); // we have an integer, find the them in the table
+                    } catch (NumberFormatException ignore) {
+                    }
+                    if (target == null)
+                        System.out.println("[!] Invalid ID");
+                    else if (!(currentUser.isAdmin() || target.getCreatedBy().equals(currentUser) || choice == 4)) {
+                        // admins have full control, wheras users can only modify their own teams
+                        // users can, however, view any team (choice 4)
+                        target = null;
+                        System.out.println("[!] You can only manage teams you create");
+                    }
                 }
             }
+            switch (choice) {
+                case 1: // create
+                    teams.add(new team(input, currentUser));
+                    break;
+                case 2: // modify
+                    target.modify(input); //each class should have a modify function, similar to how the constructor works
+                    break;
+                case 3: // delete
+                        System.out.printf("Do you really want to delete team \"%s\" id \"%s\"? (Y/N) ",
+                                target.getTeamName(),
+                                target.getId());
+                        String str = "";
+                        while (str.length() == 0) {
+                            str = input.next();
+                        }
+                        char c = str.charAt(0);
+                        if (c == 'y' || c == 'Y') {
+                            teams.remove(target);
+                            System.out.println("Confirmed. Team was deleted.");
+                        } else {
+                            System.out.println("Aborted. Team was not deleted.");
+                        }
+
+                    break;
+                case 4:
+                    target.showTeam();
+                    break;
+                case 5: // back
+                    terminate = true;
+                    break;
+                default:
+                    System.out.println("[!] Please enter a valid option");
+                    break;
+            }
+
         } while (!terminate);
 
     }
 
     public static void ShowTeamsTable() {
-        System.out.println("|  id  |  color  |      Name      | Additional information ");
+        System.out.println("|  Id  |       Name       |     Created By     |  color  | Additional information ");
         for (team o : teams) {
             System.out.println(o.toColumns());
         }
@@ -371,15 +400,11 @@ public class main {
             // display the list
             ShowTasksTable(currentUser);
 
-            if (currentUser.isAdmin()) // only admins can do the following:
-                System.out.print(" 1: Create New Task\n" +
-                        " 2: Modify Task\n" +
-                        " 3: Delete Task\n" +
-                        " 4: Back\n");
-            else {
-                System.out.println("Only admins can modify tasks");
-                System.out.print(" 1: Back\n");
-            }
+            System.out.println(" 1: Create New Task");
+            System.out.println(" 2: Modify Task");
+            System.out.println(" 3: Delete Task");
+            System.out.println(" 4: Toggle Task Status");
+            System.out.println(" 5: Back");
 
             System.out.print("Choice: ");
             try {
@@ -389,81 +414,77 @@ public class main {
                 continue;
             }
 
-            if (currentUser.isAdmin()) {
-                if (choice == 2 || choice == 3) {
-                    if (tasks.size() == 0) {
-                        System.out.println("[!] No tasks exist");
-                        continue;
+
+            if (choice == 2 || choice == 3 || choice == 4) {
+                if (tasks.size() == 0) {
+                    System.out.println("[!] No tasks exist");
+                    continue;
+                }
+                main.skipEmptyLine(input);
+                while (target == null) {
+                    System.out.print("Target task ID(None to cancel): ");
+                    String str = input.nextLine();
+                    if (str.length() == 0)
+                        continue menu;
+                    try {
+                        target = findTask(Integer.parseInt(str)); // we have an name, find the them in the table
+                    } catch (NumberFormatException ignore) {
                     }
-                    main.skipEmptyLine(input);
-                    while (target == null) {
-                        System.out.print("Target task ID(None to cancel): ");
-                        String str = input.nextLine();
-                        if (str.length() == 0)
-                            continue menu;
-                        try {
-                            target = findTask(Integer.parseInt(str)); // we have an name, find the them in the table
-                        } catch (NumberFormatException ignore) {
-                        }
-                        if (target == null)
-                            System.out.println("[!] Invalid ID");
+                    if (target == null)
+                        System.out.println("[!] Invalid ID");
+                    else if (!(currentUser.isAdmin() || target.getCreatedBy().equals(currentUser) || choice == 4)) {
+                        // admins have full control, wheras users can only modify their own tasks
+                        target = null;
+                        System.out.println("[!] You can only manage tasks you create");
                     }
                 }
-                switch (choice) {
-                    case 1: // create
-                        tasks.add(new task(input, currentUser));
-                        break;
-                    case 2: // modify
-                        target.modify(input); //each class should have a modify function, similar to how the constructor works
-                        break;
-                    case 3: // delete
-                        System.out.printf("Do you really want to delete task \"%s\" id \"%s\"? (Y/N) ",
-                                target.getName(),
-                                target.getId());
-                        String str = "";
-                        while (str.length() == 0) {
-                            str = input.next();
-                        }
-                        char c = str.charAt(0);
-                        if (c == 'y' || c == 'Y') {
-                            tasks.remove(target);
-                            System.out.println("Confirmed. task was deleted.");
-                        } else {
-                            System.out.println("Aborted. task was not deleted.");
-                        }
-                        //}
-                        break;
-                    case 4: // logout
-                        terminate = true;
-                        break;
-                    default:
-                        System.out.println("[!] Please enter a valid option");
-                        break;
-                }
-            } else { //regular user
-                switch (choice) {
-                    case 1: // back
-                        terminate = true;
-                        break;
-//                    case 2: //should allow self modification of their OWN, non-admin, account
-//                        break
-                    default:
-                        System.out.println("[!] Please enter a valid option");
-                        break;
-                }
+            }
+            switch (choice) {
+                case 1: // create
+                    tasks.add(new task(input, currentUser));
+                    break;
+                case 2: // modify
+                    target.modify(input); //each class should have a modify function, similar to how the constructor works
+                    break;
+                case 3: // delete
+                    System.out.printf("Do you really want to delete task \"%s\" id \"%s\"? (Y/N) ",
+                            target.getName(),
+                            target.getId());
+                    String str = "";
+                    while (str.length() == 0) {
+                        str = input.next();
+                    }
+                    char c = str.charAt(0);
+                    if (c == 'y' || c == 'Y') {
+                        tasks.remove(target);
+                        System.out.println("Confirmed. task was deleted.");
+                    } else {
+                        System.out.println("Aborted. task was not deleted.");
+                    }
+                    break;
+                case 4: // toggle task status
+                    target.toggleStatus();
+                    System.out.printf("Task %d (%s) set to %s\n", target.getId(), target.getName(), target.getStatus());
+                    break;
+                case 5: // logout
+                    terminate = true;
+                    break;
+                default:
+                    System.out.println("[!] Please enter a valid option");
+                    break;
             }
         } while (!terminate);
     }
 
     public static void ShowTasksTable() { // shows ALL the tasks regardless of user
-        System.out.println("|  id  |  color  |      Name      |   Assigned To  |           Due Date           | Subtasks ");
+        System.out.println("|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           | Subtasks ");
         for (task o : tasks) { // prints only the tasks that belong to the user OR all tasks if they are an admin
             System.out.println(o.toColumns());
         }
     }
 
     public static void ShowTasksTable(member currentUser) {
-        System.out.println("|  id  |  color  |      Name      |   Assigned To  |           Due Date           | Subtasks ");
+        System.out.println("|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           | Subtasks ");
         for (task o : tasks) { // prints only the tasks that belong to the user OR all tasks if they are an admin
             if (currentUser.isAdmin() || o.getAssignedTo().equals(currentUser))
                 System.out.println(o.toColumns());
@@ -481,16 +502,11 @@ public class main {
             // display the list
             ShowCategoryTable();
 
-            if (currentUser.isAdmin()) // only admins can do the following:
-                System.out.print(" 1: Create New Category\n" +
-                        " 2: Modify Category\n" +
-                        " 3: Delete Category\n" +
-                        " 4: View Category Tasks\n" +
-                        " 5: Back\n");
-            else {
-                System.out.println("Only admins can modify users");
-                System.out.print(" 1: Back\n");
-            }
+            System.out.println(" 1: Create New Category");
+            System.out.println(" 2: Modify Category");
+            System.out.println(" 3: Delete Category");
+            System.out.println(" 4: View Category Tasks");
+            System.out.println(" 5: Back");
 
             System.out.print("Choice: ");
             try {
@@ -500,69 +516,62 @@ public class main {
                 continue;
             }
 
-            if (currentUser.isAdmin()) {
-                if (choice == 2 || choice == 3 || choice == 4) {
-                    if (categories.size() == 0) {
-                        System.out.println("[!] No categories exist");
-                        continue;
+            if (choice == 2 || choice == 3 || choice == 4) {
+                if (categories.size() == 0) {
+                    System.out.println("[!] No categories exist");
+                    continue;
+                }
+                main.skipEmptyLine(input);
+                while (target == null) {
+                    System.out.print("Target Category Name(None to cancel): ");
+                    String str = input.nextLine();
+                    if (str.length() == 0)
+                        continue menu;
+                    try {
+                        target = findCategory(Integer.parseInt(str)); // we have an integer, find the them in the table
+                    } catch (NumberFormatException ignore) {
                     }
-                    main.skipEmptyLine(input);
-                    while (target == null) {
-                        System.out.print("Target Category Name(None to cancel): ");
-                        String str = input.nextLine();
-                        if (str.length() == 0)
-                            continue menu;
-                        try {
-                            target = findCategory(Integer.parseInt(str)); // we have an integer, find the them in the table
-                        } catch (NumberFormatException ignore) {
-                        }
-                        if (target == null)
-                            System.out.println("[!] Invalid ID");
+                    if (target == null)
+                        System.out.println("[!] Invalid ID");
+                    else if (!(currentUser.isAdmin() || target.getCreatedBy().equals(currentUser) || choice == 4)) {
+                        // admins have full control, wheras users can only modify their own categories
+                        // users can, however, view any category (choice 4)
+                        target = null;
+                        System.out.println("[!] You can only manage categories you create");
                     }
                 }
-                switch (choice) {
-                    case 1: // create
-                        categories.add(new category(input, currentUser));
-                        break;
-                    case 2: // modify
-                        target.modify(); //each class should have a modify function, similar to how the constructor works
-                        break;
-                    case 3: // delete
-                        System.out.printf("Do you really want to delete category \"%s\"? (Y/N) ",
-                                target.getCategoryName());
-                        String str = "";
-                        while (str.length() == 0) {
-                            str = input.next();
-                        }
-                        char c = str.charAt(0);
-                        if (c == 'y' || c == 'Y') {
-                            categories.remove(target);
-                            System.out.println("Confirmed. User was deleted.");
-                        } else {
-                            System.out.println("Aborted. User was not deleted.");
-                        }
-                        break;
-                    case 4:
-                        target.showTasks();
-                        break;
-                    case 5: // logout
-                        terminate = true;
-                        break;
-                    default:
-                        System.out.println("[!] Please enter a valid option");
-                        break;
-                }
-            } else { //regular user
-                switch (choice) {
-                    case 1: // back
-                        terminate = true;
-                        break;
-//                    case 2: //should allow self modification of their OWN, non-admin, account
-//                        break
-                    default:
-                        System.out.println("[!] Please enter a valid option");
-                        break;
-                }
+            }
+            switch (choice) {
+                case 1: // create
+                    categories.add(new category(input, currentUser));
+                    break;
+                case 2: // modify
+                    target.modify(); //each class should have a modify function, similar to how the constructor works
+                    break;
+                case 3: // delete
+                    System.out.printf("Do you really want to delete category \"%s\"? (Y/N) ",
+                            target.getCategoryName());
+                    String str = "";
+                    while (str.length() == 0) {
+                        str = input.next();
+                    }
+                    char c = str.charAt(0);
+                    if (c == 'y' || c == 'Y') {
+                        categories.remove(target);
+                        System.out.println("Confirmed. User was deleted.");
+                    } else {
+                        System.out.println("Aborted. User was not deleted.");
+                    }
+                    break;
+                case 4:
+                    target.showCategory();
+                    break;
+                case 5: // logout
+                    terminate = true;
+                    break;
+                default:
+                    System.out.println("[!] Please enter a valid option");
+                    break;
             }
         } while (!terminate);
     }
@@ -619,5 +628,25 @@ public class main {
         }catch (Exception ignore) {
 
         }
+    }
+
+    public static void honeypot(Scanner input, member currentUser) {
+        int attempts = 3;
+        do {
+            System.out.println("\n[ Honeypot triggered ]");
+            System.out.println("[!] Please re-authenticate.");
+            System.out.printf("User ID: %d\n", currentUser.getId());
+            System.out.print("Password: ");
+            if (currentUser.authenticate(input.nextLine())) {
+                System.out.printf("\nThank you, %s, carry on.\n", currentUser.getName());
+                break;
+            } else if (attempts > 1){
+                System.out.println("[!] Authentication failed.");
+            } else {
+                System.out.println("[!] Lets just pretend you remembered your password -_-\n");
+                break;
+            }
+            attempts--;
+        } while (true);
     }
 }

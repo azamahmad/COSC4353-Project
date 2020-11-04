@@ -37,15 +37,45 @@ public class member {
         additional = input.nextLine();
     }
 
+    public member(String name, String password, String color, String additional, boolean admin) {
+        this.name = name;
+        this.id = currentID++;
+        setPassword(password);
+        this.color = color;
+        this.admin = admin;
+        this.additional = additional;
+    }
+
     public void modify(Scanner input) {
         System.out.println("Enter a blank line to keep current value.");
-        String str;
+        String str, str2;
         System.out.printf("Member name(%s): ", name);
         str = input.nextLine();
         if (str.length() > 0) // do this to keep the original value if no input was given
             name = str;
         System.out.println("Username is " + name);
-//        System.out.print("Password: ");
+        do {
+            System.out.print("Change Password? (Enter current password): ");
+            str = input.nextLine();
+            if (str.length() > 0) {
+                if (authenticate(str)) {
+                    System.out.print("Password matched, enter new password: ");
+                    str2 = input.nextLine();
+                    System.out.print("Re-enter new password to confirm: ");
+                    if (str2.equals(input.nextLine())) {
+                        System.out.println("(i) Password changed successfully!");
+                        changePassword(str, str2);
+                        break;
+                    } else {
+                        System.out.println("[!] New passwords did not match");
+                    }
+                } else {
+                    System.out.println("[!] Incorrect password");
+                }
+            } else {
+                break;
+            }
+        } while (true);
         System.out.printf("Color(%s): ", color);
         str = input.nextLine();
         if (str.length() > 0)
@@ -57,15 +87,6 @@ public class member {
             additional = str;
     }
 
-    public member(String name, String password, String color, boolean admin) {
-        this.name = name;
-        this.id = currentID++;
-        setPassword(password);
-        this.color = color;
-        this.admin = admin;
-        this.additional = "";
-    }
-
     void print(){
         System.out.println("Username is " + name);
         System.out.println("ID is " + id);
@@ -74,12 +95,12 @@ public class member {
     }
 
     public String toColumns() {
-        // format:           "|  id  |  color  |      Name      | Admin | Additional information "
-        return String.format("| % 4d | %7s | %14s |   %s   | %s",
+        // format:           "|  Id  |      Name      | Admin |  color  | Additional information "
+        return String.format("| % 4d | %14s |   %s   | %7s | %s",
                 id,
-                color,
                 name,
                 admin ? "*" : " ",
+                color,
                 additional);
     }
 

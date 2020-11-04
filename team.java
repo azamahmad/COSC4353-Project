@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class team {
@@ -7,9 +8,11 @@ public class team {
     private static int currentID = 1;
     private int id;
     private String additional;
+    private member createdBy;
+    private Date createdOn;
     private ArrayList<member> teamMembers;
     
-    team(Scanner input){
+    team(Scanner input, member currentUser){
         main.skipEmptyLine(input);
         do{
             System.out.print("Input team name:");
@@ -29,11 +32,21 @@ public class team {
 
         System.out.print("Additional team information (optional): ");
         additional = input.nextLine();
-
+        createdBy = currentUser;
+        createdOn = new Date();
         teamMembers = new ArrayList<>();
         menuAddMember(input);
     }
 
+    public team(String name, member createdBy, Date createdOn, String color, String additional) {
+        this.teamName = name;
+        this.id = currentID++;
+        this.color = color;
+        this.additional = additional;
+        this.createdBy = createdBy;
+        this.createdOn = createdOn;
+        this.teamMembers = new ArrayList<>();
+    }
 
     public void modify(Scanner input) {
         System.out.println("Enter a blank line to keep current value.");
@@ -52,17 +65,8 @@ public class team {
         str = input.nextLine();
         if (str.length() > 0)
             additional = str;
-
         menuAddMember(input);
         menuRemoveMember(input);
-    }
-
-    public team(String name, String color) {
-        this.teamName = name;
-        this.id = currentID++;
-        this.color = color;
-        this.additional = "";
-        this.teamMembers = new ArrayList<>();
     }
 
     void print(){
@@ -73,11 +77,12 @@ public class team {
     }
 
     public String toColumns() {
-        // format:           "|  id  |  color  |      Name      | Additional information "
-        return String.format("| % 4d | %7s | %14s | %s",
+        // format:           "|  Id  |       Name       |     Created By     |  color  | Additional information "
+        return String.format("| % 4d | %16s | %18s | %7s | %s",
                 id,
-                color,
                 teamName,
+                String.format("%d (%s)", createdBy.getId(), createdBy.getName()),
+                color,
                 additional);
     }
 
@@ -91,6 +96,14 @@ public class team {
 
     public int getId() {
         return id;
+    }
+
+    public member getCreatedBy() {
+        return createdBy;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
     }
 
     public boolean hasMember(member user) {
@@ -121,9 +134,9 @@ public class team {
             System.out.printf("More info: %s\n", additional);
         System.out.printf("Color: %s\n", color);
         if (teamMembers.size() > 0) {
-            System.out.println("|  id  |  Name");
+            System.out.println("|  Id  |  Name");
             for (member user : teamMembers)
-                System.out.printf("| % 4d  |  %s\n", user.getId(), user.getName());
+                System.out.printf("| % 4d |  %s\n", user.getId(), user.getName());
         } else {
             System.out.println("No team members");
         }
