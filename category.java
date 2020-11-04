@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -9,6 +10,7 @@ public class category {
     private static int currentID = 1; // keeps id's unique
     private member createdBy;
     private Date createdOn;
+    private ArrayList<task> categoryTasks;
 
     category(Scanner input, member currentUser) {
         main.skipEmptyLine(input);
@@ -28,6 +30,9 @@ public class category {
         System.out.println("Enter description for category: ");
         description = input.nextLine();
         System.out.println(categoryName + " description: " + description);
+
+        categoryTasks = new ArrayList<>();
+        menuAddTask(input);
     }
 
     public void modify() {
@@ -49,6 +54,9 @@ public class category {
         if (str.length() > 0)
             description = str;
         System.out.println("Description is " + description);
+
+        menuAddTask(input);
+        menuRemoveTask(input);
     }
     void print(){
         System.out.println("Category name is: " + categoryName);
@@ -89,5 +97,95 @@ public class category {
 
     public Date getCreatedOn() {
         return createdOn;
+    }
+    
+    public boolean hasTask(task task) {
+        return categoryTasks.contains(task);
+    }
+
+    public boolean addTask(task task) { // returns true if member was successfully added
+        if (this.hasTask(task)) {
+            return false;
+        } else {
+            categoryTasks.add(task);
+            return true;
+        }
+    }
+
+    public boolean removeTask(task task) { // returns true if member was successfully removed
+        if (!this.hasTask(task)) {
+            return false;
+        } else {
+            categoryTasks.remove(task);
+            return true;
+        }
+    }
+
+    public void showTasks() {
+        System.out.printf("[ Category: %s ]\n", categoryName);
+        if (description.length() > 0)
+            System.out.printf("More info: %s\n", description);
+        System.out.printf("Color: %s\n", color);
+        if (categoryTasks.size() > 0) {
+            System.out.println("|  id  |  color  |      Name      |   Assigned To  |           Due Date           | Subtasks ");
+            for (task task : categoryTasks)
+                System.out.println(task.toColumns());
+        } else {
+            System.out.println("No category tasks");
+        }
+        System.out.println();
+    }
+
+    public void menuAddTask(Scanner input) {
+        System.out.println("[ Tasks ]");
+        main.ShowTasksTable();
+        System.out.println("[!] Add Tasks to the category");
+        task target = null;
+        while (true) {
+            System.out.print("Select task ID(None to cancel): ");
+            String str = input.nextLine();
+            if (str.length() == 0)
+                break;
+            try {
+                target = main.findTask(Integer.parseInt(str)); // we have an integer, find the them in the table
+            } catch (NumberFormatException ignore){
+            }
+            if (target == null) {
+                System.out.println("[!] Invalid ID");
+                continue;
+            }
+            if (this.addTask(target)) {
+                System.out.printf("Added %d (%s) to the category\n", target.getId(), target.getName());
+            } else {
+                System.out.printf("[!] %d (%s) is already in the category\n", target.getId(), target.getName());
+            }
+        }
+    }
+
+    public void menuRemoveTask(Scanner input) {
+        System.out.println("[ Tasks ]");
+        showTasks();
+        System.out.println("[!] Remove Tasks to the category");
+        task target = null;
+        while (true) {
+            System.out.print("Select user ID(None to cancel): ");
+            String str = input.nextLine();
+            if (str.length() == 0)
+                break;
+            try {
+                target = main.findTask(Integer.parseInt(str)); // we have an integer, find the them in the table
+            } catch (NumberFormatException ignore){
+            }
+            if (target == null) {
+                System.out.println("[!] Invalid ID");
+                continue;
+            }
+            if (this.removeTask(target)) {
+                System.out.printf("Removed %d (%s) from the category\n", target.getId(), target.getName());
+            } else {
+                System.out.printf("[!] %d (%s) is not in the category\n", target.getId(), target.getName());
+            }
+        }
+
     }
 }

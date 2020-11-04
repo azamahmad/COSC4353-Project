@@ -455,6 +455,13 @@ public class main {
         } while (!terminate);
     }
 
+    public static void ShowTasksTable() { // shows ALL the tasks regardless of user
+        System.out.println("|  id  |  color  |      Name      |   Assigned To  |           Due Date           | Subtasks ");
+        for (task o : tasks) { // prints only the tasks that belong to the user OR all tasks if they are an admin
+            System.out.println(o.toColumns());
+        }
+    }
+
     public static void ShowTasksTable(member currentUser) {
         System.out.println("|  id  |  color  |      Name      |   Assigned To  |           Due Date           | Subtasks ");
         for (task o : tasks) { // prints only the tasks that belong to the user OR all tasks if they are an admin
@@ -478,7 +485,8 @@ public class main {
                 System.out.print(" 1: Create New Category\n" +
                         " 2: Modify Category\n" +
                         " 3: Delete Category\n" +
-                        " 4: Back\n");
+                        " 4: View Category Tasks\n" +
+                        " 5: Back\n");
             else {
                 System.out.println("Only admins can modify users");
                 System.out.print(" 1: Back\n");
@@ -493,7 +501,7 @@ public class main {
             }
 
             if (currentUser.isAdmin()) {
-                if (choice == 2 || choice == 3) {
+                if (choice == 2 || choice == 3 || choice == 4) {
                     if (categories.size() == 0) {
                         System.out.println("[!] No categories exist");
                         continue;
@@ -534,7 +542,10 @@ public class main {
                             System.out.println("Aborted. User was not deleted.");
                         }
                         break;
-                    case 4: // logout
+                    case 4:
+                        target.showTasks();
+                        break;
+                    case 5: // logout
                         terminate = true;
                         break;
                     default:

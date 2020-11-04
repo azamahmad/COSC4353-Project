@@ -175,7 +175,7 @@ public class team {
                 continue;
             }
             if (this.removeMember(target)) {
-                System.out.printf("Removed %d (%s) to the team\n", target.getId(), target.getName());
+                System.out.printf("Removed %d (%s) from the team\n", target.getId(), target.getName());
             } else {
                 System.out.printf("[!] %d (%s) is not in the team\n", target.getId(), target.getName());
             }
