@@ -13,6 +13,7 @@ public class member {
     private byte salt[];
     private boolean admin;
     private String additional;
+    private boolean deleted;
 
     member(Scanner input){
         main.skipEmptyLine(input);
@@ -47,6 +48,10 @@ public class member {
     }
 
     public void modify(Scanner input) {
+        if (deleted) {
+            System.out.println("[!] User does not exist"); // we shouldn't expect to see this, but just in case
+            return;
+        }
         System.out.println("Enter a blank line to keep current value.");
         String str, str2;
         System.out.printf("Member name(%s): ", name);
@@ -95,16 +100,20 @@ public class member {
     }
 
     public String toColumns() {
-        // format:           "|  Id  |      Name      | Admin |  color  | Additional information "
-        return String.format("| % 4d | %14s |   %s   | %7s | %s",
-                id,
-                name,
-                admin ? "*" : " ",
-                color,
-                additional);
+        // format:                      "|  Id  |      Name      | Admin |  color  | Additional information "
+        return !deleted ? String.format("| % 4d | %14s |   %s   | %7s | %s\n",
+                getId(),
+                getName(),
+                isAdmin() ? "*" : " ",
+                getColor(),
+                getAdditional())
+                :
+                "";
     }
 
     public boolean authenticate(String password) {
+        if (deleted)
+            return false;
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
             digest.update(salt);
@@ -117,6 +126,8 @@ public class member {
     }
 
     public boolean changePassword(String oldPassword, String newPassword) {
+        if (deleted)
+            return false;
         if (authenticate(oldPassword)) {
             setPassword(newPassword);
             return true;
@@ -138,7 +149,7 @@ public class member {
     }
 
     public boolean isAdmin() {
-        return admin;
+        return !deleted && admin;
     }
 
     public void setAdmin(boolean admin, member other){ // Admins can set admin status of others, but not revoke themselves idk
@@ -148,15 +159,27 @@ public class member {
     }
 
     public String getName() {
-        return name;
+            return !deleted ? name : "User Deleted";
     }
 
     public int getId() {
-        return id;
+        return id; 
     }
 
     public String getColor() {
-        return color;
+        return !deleted ? color : "";
+    }
+
+    public String getAdditional() {
+        return !deleted ? additional : "";
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted() {
+        deleted = true;
     }
 
 

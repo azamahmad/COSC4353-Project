@@ -253,7 +253,12 @@ public class main {
                         }
                         char c = str.charAt(0);
                         if (c == 'y' || c == 'Y') {
-                            members.remove(target);
+//                            members.remove(target);
+                            target.setDeleted();
+                            // remove member from teams
+                            for (team t : teams)
+                                if (t.hasMember(target))
+                                    t.removeMember(target);
                             System.out.println("Confirmed. User was deleted.");
                         } else {
                             System.out.println("Aborted. User was not deleted.");
@@ -290,7 +295,7 @@ public class main {
     public static void ShowMemberTable() {
         System.out.println("|  Id  |      Name      | Admin |  color  | Additional information ");
         for (member o : members) {
-            System.out.println(o.toColumns());
+            System.out.print(o.toColumns());
         }
     }
 
