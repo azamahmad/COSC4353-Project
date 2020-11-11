@@ -629,7 +629,7 @@ public class main {
 
     public static void skipEmptyLine(Scanner input) { // hotfix for using scanner.next() followed by scanner.nextLine()
         try {
-            input.skip("\n");
+            input.skip("\r?\n");
         }catch (Exception ignore) {
 
         }
