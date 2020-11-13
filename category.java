@@ -10,7 +10,11 @@ public class category {
     private member createdBy;
     private Date createdOn;
     private ArrayList<task> categoryTasks;
-
+    public category(String categoryName, String color, String description){
+        this.categoryName = categoryName;
+        this.color = color;
+        this.description = description;
+    }
     category(Scanner input, member currentUser) {
         main.skipEmptyLine(input);
         createdBy = currentUser;
