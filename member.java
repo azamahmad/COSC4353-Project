@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class member {
+public class member{
     private String name;
     private int id;
     private static int currentID = 1; // keeps id's unique

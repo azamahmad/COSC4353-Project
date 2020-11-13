@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
   //ArrayList<category> categories = new ArrayList<category>();  --From Main.java
 
-public class category {
+public class category{
     private String categoryName, color, description;
     private String editCategory, deleteCategory;
     private int choice;

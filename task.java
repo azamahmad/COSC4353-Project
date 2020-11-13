@@ -2,7 +2,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-public class task {
+public class task{
     private int ID;
     private static int currentID = 1;
     private String name;
