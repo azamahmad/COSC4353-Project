@@ -13,41 +13,74 @@ public class member{
     private byte salt[];
     private boolean admin;
     private String additional;
-    private boolean validated;
+    private boolean deleted;
 
-    member(){
-        Scanner input = new Scanner(System.in);
+    member(Scanner input){
+        main.skipEmptyLine(input);
         do {
-            System.out.println("Input member name:");
+            System.out.print("Input member name: ");
             name = input.nextLine();
         } while(name.length() == 0);
 
         System.out.println("Username is " + name);
         id = currentID++;
         System.out.println("ID is " + id);
-        System.out.println("Password: ");
-        String password = input.next();
+        System.out.print("Password: ");
+        String password = input.nextLine();
         setPassword(password);
         admin = false; // figure out how setting admin works
         do {
-            System.out.println("Input member color:");
+            System.out.print("Input member color: ");
             color = input.nextLine();
         } while (color.length() == 0);
         System.out.println("Color is " + color);
-        System.out.println("Additional member information (can leave empty):");
+        System.out.println("Additional member information (optional):");
         additional = input.nextLine();
     }
 
-    public void modify() {
+    public member(String name, String password, String color, String additional, boolean admin) {
+        this.name = name;
+        this.id = currentID++;
+        setPassword(password);
+        this.color = color;
+        this.admin = admin;
+        this.additional = additional;
+    }
+
+    public void modify(Scanner input) {
+        if (deleted) {
+            System.out.println("[!] User does not exist"); // we shouldn't expect to see this, but just in case
+            return;
+        }
         System.out.println("Enter a blank line to keep current value.");
-        Scanner input = new Scanner(System.in);
-        String str;
+        String str, str2;
         System.out.printf("Member name(%s): ", name);
         str = input.nextLine();
-        if (name.length() > 0) // do this to keep the original value if no input was given
+        if (str.length() > 0) // do this to keep the original value if no input was given
             name = str;
         System.out.println("Username is " + name);
-//        System.out.println("Password: ");
+        do {
+            System.out.print("Change Password? (Enter current password): ");
+            str = input.nextLine();
+            if (str.length() > 0) {
+                if (authenticate(str)) {
+                    System.out.print("Password matched, enter new password: ");
+                    str2 = input.nextLine();
+                    System.out.print("Re-enter new password to confirm: ");
+                    if (str2.equals(input.nextLine())) {
+                        System.out.println("(i) Password changed successfully!");
+                        changePassword(str, str2);
+                        break;
+                    } else {
+                        System.out.println("[!] New passwords did not match");
+                    }
+                } else {
+                    System.out.println("[!] Incorrect password");
+                }
+            } else {
+                break;
+            }
+        } while (true);
         System.out.printf("Color(%s): ", color);
         str = input.nextLine();
         if (str.length() > 0)
@@ -59,15 +92,6 @@ public class member{
             additional = str;
     }
 
-    public member(String name, String password, String color, boolean admin) {
-        this.name = name;
-        this.id = currentID++;
-        setPassword(password);
-        this.color = color;
-        this.admin = admin;
-        this.additional = "";
-    }
-
     void print(){
         System.out.println("Username is " + name);
         System.out.println("ID is " + id);
@@ -76,16 +100,20 @@ public class member{
     }
 
     public String toColumns() {
-        // format:           "|  id  |  color  |      Name      | Admin | Additional information "
-        return String.format("| % 3d | %7s | %14s |   %s   | %s",
-                id,
-                color,
-                name,
-                admin ? "*" : " ",
-                additional);
+        // format:                      "|  Id  |      Name      | Admin |  color  | Additional information "
+        return !deleted ? String.format("| % 4d | %14s |   %s   | %7s | %s\n",
+                getId(),
+                getName(),
+                isAdmin() ? "*" : " ",
+                getColor(),
+                getAdditional())
+                :
+                "";
     }
 
     public boolean authenticate(String password) {
+        if (deleted)
+            return false;
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
             digest.update(salt);
@@ -98,8 +126,11 @@ public class member{
     }
 
     public boolean changePassword(String oldPassword, String newPassword) {
+        if (deleted)
+            return false;
         if (authenticate(oldPassword)) {
             setPassword(newPassword);
+            return true;
         }
         return false;
     }
@@ -118,7 +149,7 @@ public class member{
     }
 
     public boolean isAdmin() {
-        return admin;
+        return !deleted && admin;
     }
 
     public void setAdmin(boolean admin, member other){ // Admins can set admin status of others, but not revoke themselves idk
@@ -128,15 +159,27 @@ public class member{
     }
 
     public String getName() {
-        return name;
+            return !deleted ? name : "User Deleted";
     }
 
     public int getId() {
-        return id;
+        return id; 
     }
 
     public String getColor() {
-        return color;
+        return !deleted ? color : "";
+    }
+
+    public String getAdditional() {
+        return !deleted ? additional : "";
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted() {
+        deleted = true;
     }
 
 

@@ -9,27 +9,15 @@ public class task{
     private String description;
     private String subtasks;
     private Date dueDate;
-    private String assignedTo;
+    private member assignedTo; // user
     private Date createdOn;
-    private String createdBy;
+    private member createdBy; // user
     private String status;
     private String color;
 
-    public task(){
-//        this.ID = nextID++;
-//        name        = "unnamed task"
-//        description = "N/A";
-//        subtasks    = "";
-//        dueDate     = new Date();
-//        assignedTo  = new Member();
-//        createdOn   = new Date();
-//        createdBy   = new Member();
-//        status      = ""; //what type?
-//        color       = Color.blue;
+    public task(Scanner input, member currentUser){
+        main.skipEmptyLine(input);
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
-        boolean validated;
-
-        Scanner input = new Scanner(System.in);
         do {
             System.out.print("Task name: ");
             name = input.nextLine();
@@ -40,36 +28,50 @@ public class task{
         } while (description.length() == 0);
         System.out.print("Sub tasks (separated by commas): ");
         subtasks = input.nextLine();
+        Date now = new Date();
         do {
             System.out.print("Due date for task(MM-DD-YYYY HH:MM AM/PM): ");
             try {
                 dueDate = df.parse(input.nextLine());
-                validated = true;
+                if (dueDate.after(now))
+                    break;
+                else
+                    System.out.println("[!] Due date should not be in the past.");
             } catch(java.text.ParseException e) {
                 System.out.println("Invalid date.");
-                validated = false;
             }
-        } while (!validated);
-        System.out.print("Assigned to: ");
-        //TODO: find and assign the member
-        assignedTo = input.nextLine();
+        } while (true);
+        do {
+            System.out.println("[ Members ]");
+            main.ShowMemberTable();
+            System.out.print("Assigned to: ");
+            String str = input.next();
+            if (str.length() > 0) {
+                try {
+                    member assign = main.findMember(Integer.parseInt(str));
+                    if (assign != null) {
+                        assignedTo = assign;
+                        break;
+                    }
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+                System.out.println("Invalid User ID");
+            } else {
+                break;
+            }
+        } while (true);
+        System.out.printf("Assigned to %d (%s)\n", assignedTo.getId(), assignedTo.getName());
         createdOn = new Date();
-        //TODO: receive the logged in user as an argument
-        createdBy = "system";
+        createdBy = currentUser;
         status = "active";
         System.out.print("Color: ");
+        main.skipEmptyLine(input);
         color = input.nextLine();
     }
 
-    public task(String name,
-                String description,
-                String subtasks,
-                Date dueDate,
-                String assignedTo,
-                Date createdOn,
-                String createdBy,
-                String status,
-                String color) {
+    public task(String name, member createdBy, member assignedTo, Date createdOn, Date dueDate, String color,
+                String description, String status, String subtasks) {
         this.ID = currentID++;
         this.name = name;
         this.description = description;
@@ -82,11 +84,11 @@ public class task{
         this.color = color;
     }
 
-    public void modify() {
+    public void modify(Scanner input) {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
+        member assign;
 
         System.out.println("Enter a blank line to keep current value.");
-        Scanner input = new Scanner(System.in);
         String str;
         System.out.printf("Task name(%s): ", name);
         str = input.nextLine();
@@ -111,17 +113,29 @@ public class task{
                 System.out.println("Invalid date.");
             }
         System.out.println("Due Date is " + dueDate);
-        System.out.printf("Assigned to(%s): ", assignedTo);
-        str = input.nextLine();
-        if (str.length() > 0)
-            assignedTo = str;
-        System.out.println("Assigned to " + assignedTo);
+        do {
+            System.out.printf("Assigned to(%s): ", assignedTo.getName());
+            str = input.nextLine();
+            if (str.length() > 0) {
+                try {
+                    assign = main.findMember(Integer.parseInt(str));
+                    if (assign != null) {
+                        assignedTo = assign;
+                        break;
+                    }
+                } finally {
+                    System.out.println("Invalid User ID");
+                }
+            } else {
+                break;
+            }
+        } while (true);
+        System.out.printf("Assigned to %d (%s)\n", assignedTo.getId(), assignedTo.getName());
         System.out.printf("Status(%s): ", status);
         str = input.nextLine();
         if (str.length() > 0)
             status = str;
         System.out.println("Status is " + status);
-//        System.out.println("Password: ");
         System.out.printf("Color(%s): ", color);
         str = input.nextLine();
         if (str.length() > 0)
@@ -135,7 +149,7 @@ public class task{
         System.out.format("Description: %s\n", description);
         System.out.format("Sub tasks: %s\n", subtasks);
         System.out.format("Due date: %s\n", df.format(dueDate));
-        System.out.format("Assigned to: %s\n", assignedTo);
+        System.out.format("Assigned to: %s\n", assignedTo.getName());
         System.out.format("Created on: %s\n", df.format(createdOn));
         System.out.format("Created by: %s\n", createdBy);
         System.out.format("Status: %s\n", status);
@@ -143,17 +157,18 @@ public class task{
     }
 
     public String toColumns() {
-        // format:           "|  id  |  color  |      Name      | Assigned To |          Due Date          | Subtasks "
-        return String.format("| % 3d | %7s | %14s | %11s | %28s | %s",
+        // format:           "|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           | Subtasks "
+        return String.format("| % 4d | %6s | %14s | %14s | %7s | %28s | %s",
                 ID,
-                color,
+                status,
                 name,
-                assignedTo,
-                dueDate,//admin ? "*" : " ",
+                assignedTo.getName(),
+                color,
+                dueDate,
                 subtasks);
     }
 
-    public int getID() {
+    public int getId() {
         return ID;
     }
 
@@ -173,7 +188,7 @@ public class task{
         return dueDate;
     }
 
-    public String getAssignedTo() {
+    public member getAssignedTo() {
         return assignedTo;
     }
 
@@ -181,12 +196,21 @@ public class task{
         return createdOn;
     }
 
-    public String getCreatedBy() {
+    public member getCreatedBy() {
         return createdBy;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public void toggleStatus() { // TODO: add completedOn variable
+        if (status.equals("active")) {
+            status = "done";
+
+        } else {
+            status = "active";
+        }
     }
 
     public String getColor() {
