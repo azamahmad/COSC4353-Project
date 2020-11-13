@@ -10,10 +10,12 @@ public class category {
     private member createdBy;
     private Date createdOn;
     private ArrayList<task> categoryTasks;
-    public category(String categoryName, String color, String description){
+
+    public category(String categoryName, String color, String description, int id){
         this.categoryName = categoryName;
         this.color = color;
         this.description = description;
+        this.id = id;
     }
     category(Scanner input, member currentUser) {
         main.skipEmptyLine(input);
