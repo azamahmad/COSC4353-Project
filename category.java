@@ -12,6 +12,12 @@ public class category {
     private String editCategory, deleteCategory;
     private int choice;
 
+    public category(String categoryName, String color, String description){
+        this.categoryName = categoryName;
+        this.color = color;
+        this.description = description;
+    }
+
     category() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter new category name: ");
@@ -48,6 +54,7 @@ public class category {
             description = str;
         System.out.println("Description is " + description);
     }
+
     void print(){
         System.out.println("Category name is: " + categoryName);
         System.out.println("Category color: " + color);

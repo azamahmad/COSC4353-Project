@@ -120,7 +120,6 @@ public class main {
         members.add(new member("Freeza", "letmein", "Purple", false));  // user id 9
         members.add(new member("Chucky Cheese", "letmein", "Grey", false));  // user id 10
         members.add(new member("Hyper Baby", "letmein", "Brown", false));  // user id 11
-
         teams.add(new team("Big Brains Team", "password", "Pink", true)); // user id 1
 
 
