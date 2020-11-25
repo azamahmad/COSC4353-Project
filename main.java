@@ -104,13 +104,13 @@ public class main {
 
             // task 1
             tasks.add(new task("Sort the parts",
-                    findMember(1), findMember(2), df.parse("2020-10-01 04:23 PM"), df.parse("2020-12-06 10:00 AM"), "pink", "", "active", "The monkey brains got mixed in with the scatter brains, please sort"));
+                    findMember(1), findMember(2), df.parse("2020-10-01 04:23 PM"), df.parse("2020-12-06 10:00 AM"), "pink", "", TaskStatus.active, false, null, "The monkey brains got mixed in with the scatter brains, please sort"));
             // task 2
             tasks.add(new task("Paint the room",
-                    findMember(1), findMember(5), df.parse("2020-11-04 12:28 AM"), df.parse("2020-12-25 02:00 PM"), "pink", "", "active", "Paint every other square inch of the room blue"));
+                    findMember(1), findMember(5), df.parse("2020-11-04 12:28 AM"), df.parse("2020-12-25 02:00 PM"), "pink", "", TaskStatus.active, false, null, "Paint every other square inch of the room blue"));
             // task 3
             tasks.add(new task("Count to ten",
-                    findMember(1), findMember(3), df.parse("1998-12-06 03:42 AM"), df.parse("2020-12-06 11:59 PM"), "grey", "", "done", "Then count to eleven, count to twelve, ad infinitum"));
+                    findMember(1), findMember(3), df.parse("1998-12-06 03:42 AM"), df.parse("2020-12-06 11:59 PM"), "grey", "", TaskStatus.done, false, null, "Then count to eleven, count to twelve, ad infinitum"));
 
             // category 1
             categories.add(new category("Demo Tasks", findMember(1), new Date(), "Blue",
@@ -482,14 +482,14 @@ public class main {
     }
 
     public static void ShowTasksTable() { // shows ALL the tasks regardless of user
-        System.out.println("|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           | Subtasks ");
+        System.out.println("|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           |    Interval     | Subtasks ");
         for (task o : tasks) { // prints only the tasks that belong to the user OR all tasks if they are an admin
             System.out.println(o.toColumns());
         }
     }
 
     public static void ShowTasksTable(member currentUser) {
-        System.out.println("|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           | Subtasks ");
+        System.out.println("|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           |    Interval     | Subtasks ");
         for (task o : tasks) { // prints only the tasks that belong to the user OR all tasks if they are an admin
             if (currentUser.isAdmin() || o.getAssignedTo().equals(currentUser))
                 System.out.println(o.toColumns());

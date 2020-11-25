@@ -3,8 +3,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class taskTest {
@@ -14,7 +12,7 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             assertEquals(4, t.getId());
         }
         catch (ParseException ignore){
@@ -27,7 +25,7 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             assertEquals("Remember the Alamo", t.getName());
         }
         catch (ParseException ignore){
@@ -40,7 +38,7 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             assertEquals("Test Descriptor", t.getDescription());
         }
         catch (ParseException ignore){
@@ -53,7 +51,7 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             assertEquals("Yes.", t.getSubtasks());
         }
         catch (ParseException ignore){
@@ -66,7 +64,7 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             System.out.println(t.getDueDate());
             assertEquals(df.parse("2020-09-21 04:23 PM"), t.getDueDate());
         }
@@ -81,7 +79,7 @@ class taskTest {
         member check = new member("Jimmy Johnson", "1", "Red", "S", true);
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), check, df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             assertEquals(check, t.getAssignedTo());
         }
         catch (ParseException ignore){
@@ -94,7 +92,7 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             assertEquals(df.parse("2020-08-21 04:23 PM"), t.getCreatedOn());
         }
         catch (ParseException ignore){
@@ -108,7 +106,7 @@ class taskTest {
         member check = new member("John Johnson", "1", "Red", "S", true);
         try {
             task t = new task("Remember the Alamo", check, new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             assertEquals(check, t.getCreatedBy());
         }
         catch (ParseException ignore){
@@ -121,8 +119,8 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
-            assertEquals("active", t.getStatus());
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
+            assertEquals(TaskStatus.active, t.getStatus());
         }
         catch (ParseException ignore){
 
@@ -134,9 +132,9 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             t.toggleStatus();
-            assertEquals("done", t.getStatus());
+            assertEquals(TaskStatus.done, t.getStatus());
         }
         catch (ParseException ignore){
 
@@ -148,7 +146,7 @@ class taskTest {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
         try {
             task t = new task("Remember the Alamo", new member("John Johnson", "1", "Red", "S", true), new member("Jimmy Johnson", "1", "Red", "S", true), df.parse("2020-08-21 04:23 PM"), df.parse("2020-09-21 04:23 PM"), "Breen",
-                    "Test Descriptor", "active", "Yes.");
+                    "Test Descriptor", TaskStatus.active, false, null, "Yes.");
             assertEquals("Breen", t.getColor());
         }
         catch (ParseException ignore){

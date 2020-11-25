@@ -1,6 +1,11 @@
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Scanner;
+
+enum TaskStatus {done, active}
 
 public class task{
     private int ID;
@@ -12,8 +17,13 @@ public class task{
     private member assignedTo; // user
     private Date createdOn;
     private member createdBy; // user
-    private String status;
+    private TaskStatus status;
     private String color;
+    //repeats tasks
+    private boolean repeats;
+    private Duration interval;
+    private int successes = 0;
+    private int failures = 0;
 
     public task(Scanner input, member currentUser){
         main.skipEmptyLine(input);
@@ -42,6 +52,42 @@ public class task{
             }
         } while (true);
         do {
+            System.out.print("Does this task repeat?(Y/N) ");
+            String str = "";
+            while (str.length() == 0)
+                str = input.next();
+            char c = str.charAt(0);
+            if (c == 'y' || c == 'Y') {
+                repeats = true;
+                do {
+                    System.out.print("Tasks repeats every \"weeks days\": ");
+                    int weeks, days;
+                    try {
+                        weeks = Integer.parseInt(input.next());
+                        if (weeks < 0) {
+                            System.out.println("[!] Weeks should be greater than 0");
+                            continue;
+                        }
+                        days = Integer.parseInt(input.next());
+                        if (days < 0) {
+                            System.out.println("[!] Days should be greater than 0");
+                            continue;
+                        }
+                    } catch (NumberFormatException ignore) {
+                        continue;
+                    }
+                    interval = Duration.ofDays(weeks * 7 + days);
+                    System.out.printf("Task repeats every %s", getIntervalString());
+                    main.skipEmptyLine(input);
+                    break;
+                } while (true);
+                break;
+            } else if (c == 'n' || c == 'N') {
+                repeats = false;
+                break;
+            }
+        } while (true);
+        do {
             System.out.println("[ Members ]");
             main.ShowMemberTable();
             System.out.print("Assigned to: ");
@@ -65,14 +111,14 @@ public class task{
         ID = currentID++;
         createdOn = new Date();
         createdBy = currentUser;
-        status = "active";
+        status = TaskStatus.active;
         System.out.print("Color: ");
         main.skipEmptyLine(input);
         color = input.nextLine();
     }
 
     public task(String name, member createdBy, member assignedTo, Date createdOn, Date dueDate, String color,
-                String description, String status, String subtasks) {
+                String description, TaskStatus status, boolean repeats, Duration interval, String subtasks) {
         this.ID = currentID++;
         this.name = name;
         this.description = description;
@@ -83,6 +129,8 @@ public class task{
         this.createdBy = createdBy;
         this.status = status;
         this.color = color;
+        this.repeats = repeats;
+        this.interval = interval;
     }
 
     public void modify(Scanner input) {
@@ -108,12 +156,50 @@ public class task{
             subtasks = str;
         System.out.println("Subtasks are " + subtasks);
         System.out.printf("Due Date (MM-DD-YYYY HH:MM AM/PM)(%s): ", dueDate);
-            try {
-                dueDate = df.parse(input.nextLine());
-            } catch (java.text.ParseException e) {
-                System.out.println("Invalid date.");
-            }
+        try {
+            dueDate = df.parse(input.nextLine());
+        } catch (java.text.ParseException e) {
+            System.out.println("Invalid date.");
+        }
         System.out.println("Due Date is " + dueDate);
+
+        do {
+            System.out.printf("Task repeats(%s)(Y, N, or blank to keep): ", repeats ? "Y, "+getIntervalString():'N');
+            str = input.nextLine();
+            if (str.length() == 0)
+                break; // keep the current value
+            char c = str.charAt(0);
+            if (c == 'y' || c == 'Y') {
+                do {
+                    repeats = true;
+                    System.out.print("Tasks repeats every \"weeks days\": ");
+                    int weeks, days;
+                    try {
+                        weeks = Integer.parseInt(input.next());
+                        if (weeks < 0) {
+                            System.out.println("[!] Weeks should be greater than 0");
+                            continue;
+                        }
+                        days = Integer.parseInt(input.next());
+                        if (days < 0) {
+                            System.out.println("[!] Days should be greater than 0");
+                            continue;
+                        }
+                    } catch (NumberFormatException ignore) {
+                        continue;
+                    }
+                    interval = Duration.ofDays(weeks * 7 + days);
+                    System.out.printf("Task repeats every %s", getIntervalString());
+                    main.skipEmptyLine(input); // b/c we used input.next() :pensive:
+                    break;
+                } while (true);
+                break;
+            } else if (c == 'n' || c == 'N') {
+                repeats = false;
+                break;
+            }
+        } while (true);
+
         do {
             System.out.printf("Assigned to(%s): ", assignedTo.getName());
             str = input.nextLine();
@@ -132,11 +218,6 @@ public class task{
             }
         } while (true);
         System.out.printf("Assigned to %d (%s)\n", assignedTo.getId(), assignedTo.getName());
-        System.out.printf("Status(%s): ", status);
-        str = input.nextLine();
-        if (str.length() > 0)
-            status = str;
-        System.out.println("Status is " + status);
         System.out.printf("Color(%s): ", color);
         str = input.nextLine();
         if (str.length() > 0)
@@ -159,13 +240,16 @@ public class task{
 
     public String toColumns() {
         // format:           "|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           | Subtasks "
-        return String.format("| % 4d | %6s | %14s | %14s | %7s | %28s | %s",
+        // format:           "|  Id  | Status |      Name      |   Assigned To  |  color  |           Due Date           |    Interval     | Subtasks "
+        updateDueDate(); // TODO: find better place to update the due date
+        return String.format("| % 4d | %6s | %14s | %14s | %7s | %28s | %15s | %s",
                 ID,
                 status,
                 name,
                 assignedTo.getName(),
                 color,
                 dueDate,
+                repeats ? getIntervalString() : "",
                 subtasks);
     }
 
@@ -201,20 +285,70 @@ public class task{
         return createdBy;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void toggleStatus() { // TODO: add completedOn variable
-        if (status.equals("active")) {
-            status = "done";
-
+    public void toggleStatus() {
+        if (status.equals(TaskStatus.active)) {
+            status = TaskStatus.done;
         } else {
-            status = "active";
+            status = TaskStatus.active;
         }
     }
 
     public String getColor() {
         return color;
+    }
+
+    public String getIntervalString() {
+        StringBuilder str = new StringBuilder();
+        int weeks = (int)Math.floor(interval.toDays()/7);
+        int days  = (int)interval.toDays() % 7;
+        if (weeks > 0) {
+            str.append(weeks).append(" week");
+            if (weeks > 1)
+                str.append("s");
+            if (days > 0)
+                str.append(" ");
+        }
+        if (days > 0) {
+            str.append(days).append(" day");
+            if (days > 1)
+                str.append("s");
+        }
+        if (weeks <= 0 && days <= 0)
+            str.append("panik");
+        return str.toString();
+    }
+
+    public boolean updateDueDate() {
+        if (repeats) {
+            LocalDateTime localDueDate = dueDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(); // convert date to local date
+            LocalDateTime now = LocalDateTime.now();
+            if (now.isAfter(localDueDate)) { // we passed the due date
+                do {
+                    localDueDate = localDueDate.plusDays(interval.toDays()); // bump the due date by the interval
+                    if (status.equals(TaskStatus.done)) {
+                        successes += 1;
+                        toggleStatus();
+                    } else {
+                        failures += 1;
+                        // no need to toggle status, since its still active
+                    }
+                } while (now.isAfter(localDueDate)); // in case multiple deadlines passed without the app being launched
+                dueDate = Date.from(localDueDate.atZone(ZoneId.systemDefault()).toInstant()); // ew convert back to date
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getSuccesses(){
+        return successes;
+    }
+
+    public int getFailures(){
+        return failures;
     }
 }
