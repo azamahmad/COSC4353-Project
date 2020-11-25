@@ -62,6 +62,7 @@ public class task{
             }
         } while (true);
         System.out.printf("Assigned to %d (%s)\n", assignedTo.getId(), assignedTo.getName());
+        ID = currentID++;
         createdOn = new Date();
         createdBy = currentUser;
         status = "active";
