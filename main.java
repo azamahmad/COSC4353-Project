@@ -293,7 +293,7 @@ public class main {
     }
 
     public static void ShowMemberTable() {
-        System.out.println("|  Id  |      Name      | Admin |  color  | Additional information ");
+        System.out.println("|  Id  |      Name      | Admin |  color  | C.percent | Additional information ");
         for (member o : members) {
             System.out.print(o.toColumns());
         }
