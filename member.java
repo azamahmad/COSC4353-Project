@@ -14,6 +14,8 @@ public class member{
     private boolean admin;
     private String additional;
     private boolean deleted;
+    protected int assigned = 0;
+    protected int completed = 0;
 
     member(Scanner input){
         main.skipEmptyLine(input);
@@ -100,12 +102,13 @@ public class member{
     }
 
     public String toColumns() {
-        // format:                      "|  Id  |      Name      | Admin |  color  | Additional information "
-        return !deleted ? String.format("| % 4d | %14s |   %s   | %7s | %s\n",
+        // format:                      "|  Id  |      Name      | Admin |  color  | C percent | Additional information "
+        return !deleted ? String.format("| % 4d | %14s |   %s   | %7s |   %,.2f    | %s\n",
                 getId(),
                 getName(),
                 isAdmin() ? "*" : " ",
                 getColor(),
+                (getAssigned()==0) ? 1.00 :getCompleted() / (double) getAssigned(),
                 getAdditional())
                 :
                 "";
@@ -168,6 +171,14 @@ public class member{
 
     public String getColor() {
         return !deleted ? color : "";
+    }
+
+    public int getAssigned() {
+        return assigned;
+    }
+
+    public int getCompleted() {
+        return completed;
     }
 
     public String getAdditional() {
