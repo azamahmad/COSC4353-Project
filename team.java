@@ -81,12 +81,13 @@ public class team {
     }
 
     public String toColumns() {
-        // format:           "|  Id  |       Name       |     Created By     |  color  | Additional information "
-        return String.format("| % 4d | %16s | %18s | %7s | %15s | %s",
+        // format:           "|  Id  |       Name       |     Created By     |  color  | C percent | Additional information "
+        return String.format("| % 4d | %16s | %18s | %7s |   %,.2f    | %s",
                 id,
                 teamName,
                 String.format("%d (%s)", createdBy.getId(), createdBy.getName()),
-                color, calculateTaskCompletion(teamMembers),
+                color,
+                calculateTaskCompletion(teamMembers),
                 additional);
     }
 
@@ -138,9 +139,15 @@ public class team {
             System.out.printf("More info: %s\n", additional);
         System.out.printf("Color: %s\n", color);
         if (teamMembers.size() > 0) {
-            System.out.println("|  Id  |  Name");
+            System.out.printf("Team Productivity: %,.2f\n",
+                    teamMembers.stream().map(member::getProductivity).mapToDouble(Double::valueOf).sum());
+            System.out.println("|  Id  |      Name      | Productivity");
             for (member user : teamMembers)
-                System.out.printf("| % 4d |  %s\n", user.getId(), user.getName());
+                if (!user.isDeleted())
+                    System.out.printf("| % 4d | %14s | %,.2f\n",
+                            user.getId(),
+                            user.getName(),
+                            user.getProductivity());
         } else {
             System.out.println("No team members");
         }
@@ -201,19 +208,17 @@ public class team {
     }
 
     private double calculateTaskCompletion(ArrayList<member> teamMembers){
-        int assigned = 0;
-        int completed = 0;
+        double assigned = 0;
+        double completed = 0;
 
         for(member user : teamMembers){
             assigned += user.getAssigned();
             completed += user.getCompleted();
         }
         if (assigned != 0){
-            return (double) (completed/assigned) * 100;
-        }
-        else{
-            double val = 0.0;
-            return val;
+            return (completed/assigned);
+        } else{
+            return 1.0;
         }
 
     }

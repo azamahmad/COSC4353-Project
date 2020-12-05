@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -389,7 +388,7 @@ public class main {
     }
 
     public static void ShowTeamsTable() {
-        System.out.println("|  Id  |       Name       |     Created By     |  color  | Additional information ");
+        System.out.println("|  Id  |       Name       |     Created By     |  color  | C percent | Additional information ");
         for (team o : teams) {
             System.out.println(o.toColumns());
         }
@@ -662,6 +661,26 @@ public class main {
         for (category o : categories) {
             o.deleteIfInside(target, o);
         }
-    };
+    }
+
+    public static int assignedUserTasks(member user) { // use this in calculateTaskCompletion or move that here
+        int assigned = 0;
+        for (task t : tasks)
+            if (t.getAssignedTo().equals(user))
+                assigned++;
+        return assigned;
+    }
+
+    public static int completedUserTasks(member user) {
+        int completed = 0;
+        for (task t : tasks)
+            if (t.getAssignedTo().equals(user) && t.getStatus().equals(TaskStatus.done))
+                completed++;
+        return completed;
+    }
+
+    public static double percentUserTasks(member user) {
+        return completedUserTasks(user) / assignedUserTasks(user);
+    }
 }
 

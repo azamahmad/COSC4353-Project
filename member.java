@@ -14,8 +14,6 @@ public class member{
     private boolean admin;
     private String additional;
     private boolean deleted;
-    protected int assigned = 0;
-    protected int completed = 0;
 
     member(Scanner input){
         main.skipEmptyLine(input);
@@ -108,7 +106,7 @@ public class member{
                 getName(),
                 isAdmin() ? "*" : " ",
                 getColor(),
-                (getAssigned()==0) ? 1.00 :getCompleted() / (double) getAssigned(),
+                getProductivity(),
                 getAdditional())
                 :
                 "";
@@ -174,15 +172,19 @@ public class member{
     }
 
     public int getAssigned() {
-        return assigned;
+        return main.assignedUserTasks(this);
     }
 
     public int getCompleted() {
-        return completed;
+        return main.completedUserTasks(this);
     }
 
     public String getAdditional() {
         return !deleted ? additional : "";
+    }
+
+    public double getProductivity() {
+        return (getAssigned()==0) ? 1.00 :getCompleted() / (double) getAssigned();
     }
 
     public boolean isDeleted() {

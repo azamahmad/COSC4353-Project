@@ -115,7 +115,6 @@ public class task{
         System.out.print("Color: ");
         main.skipEmptyLine(input);
         color = input.nextLine();
-        assignedTo.assigned += 1;
     }
 
     public task(String name, member createdBy, member assignedTo, Date createdOn, Date dueDate, String color,
@@ -129,12 +128,9 @@ public class task{
         this.createdOn = createdOn;
         this.createdBy = createdBy;
         this.status = status;
-        if (status == TaskStatus.done)
-            assignedTo.completed += 1;
         this.color = color;
         this.repeats = repeats;
         this.interval = interval;
-        assignedTo.assigned += 1;
     }
 
     public void modify(Scanner input) {
@@ -296,10 +292,8 @@ public class task{
     public void toggleStatus() {
         if (status.equals(TaskStatus.active)) {
             status = TaskStatus.done;
-            assignedTo.completed += 1;
         } else {
             status = TaskStatus.active;
-            assignedTo.completed -= 1;
         }
     }
 
@@ -359,9 +353,6 @@ public class task{
     }
 
     public void setDeleted() {
-        if (this.status == TaskStatus.done)
-            this.assignedTo.completed -= 1;
         this.status = TaskStatus.deleted;
-        this.assignedTo.assigned -= 1;
     }
 }
