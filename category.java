@@ -210,6 +210,7 @@ public class category{
             if (target == t)
                 targetc = c;
         }
-        targetc.removeTask(target);
-    };
+        if (targetc != null)
+            targetc.removeTask(target);
+    }
 }
