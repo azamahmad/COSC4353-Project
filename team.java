@@ -14,6 +14,7 @@ public class team {
     private member createdBy;
     private Date createdOn;
     private ArrayList<member> teamMembers;
+    private double tasks_completed = 0.0;
 
     team(Scanner input, member currentUser) {
         main.skipEmptyLine(input);
@@ -81,11 +82,11 @@ public class team {
 
     public String toColumns() {
         // format:           "|  Id  |       Name       |     Created By     |  color  | Additional information "
-        return String.format("| % 4d | %16s | %18s | %7s | %s",
+        return String.format("| % 4d | %16s | %18s | %7s | %15s | %s",
                 id,
                 teamName,
                 String.format("%d (%s)", createdBy.getId(), createdBy.getName()),
-                color,
+                color, calculateTaskCompletion(teamMembers),
                 additional);
     }
 
@@ -195,6 +196,24 @@ public class team {
             } else {
                 System.out.printf("[!] %d (%s) is not in the team\n", target.getId(), target.getName());
             }
+        }
+
+    }
+
+    private double calculateTaskCompletion(ArrayList<member> teamMembers){
+        int assigned = 0;
+        int completed = 0;
+
+        for(member user : teamMembers){
+            assigned += user.getAssigned();
+            completed += user.getCompleted();
+        }
+        if (assigned != 0){
+            return (double) (completed/assigned) * 100;
+        }
+        else{
+            double val = 0.0;
+            return val;
         }
 
     }
