@@ -5,7 +5,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Scanner;
 
-enum TaskStatus {done, active}
+enum TaskStatus {done, active, deleted}
 
 public class task{
     private int ID;
@@ -356,5 +356,12 @@ public class task{
 
     public int getFailures(){
         return failures;
+    }
+
+    public void setDeleted() {
+        if (this.status == TaskStatus.done)
+            this.assignedTo.completed -= 1;
+        this.status = TaskStatus.deleted;
+        this.assignedTo.assigned -= 1;
     }
 }

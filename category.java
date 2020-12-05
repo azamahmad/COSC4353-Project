@@ -203,4 +203,13 @@ public class category{
         }
 
     }
+
+    public void deleteIfInside(task target, category c){
+        category targetc = null;
+        for (task t : c.categoryTasks){
+            if (target == t)
+                targetc = c;
+        }
+        targetc.removeTask(target);
+    };
 }

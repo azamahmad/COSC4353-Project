@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -461,6 +462,8 @@ public class main {
                     }
                     char c = str.charAt(0);
                     if (c == 'y' || c == 'Y') {
+                        target.setDeleted();
+                        deleteFromCategory(target,categories);
                         tasks.remove(target);
                         System.out.println("Confirmed. task was deleted.");
                     } else {
@@ -654,5 +657,11 @@ public class main {
             attempts--;
         } while (true);
     }
+
+    public static void deleteFromCategory(task target, ArrayList<category> categories){
+        for (category o : categories) {
+            o.deleteIfInside(target, o);
+        }
+    };
 }
 
